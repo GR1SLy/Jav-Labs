@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,10 +26,11 @@ public class Habitat extends JFrame {
 
         _timerPanel = new JPanel();
         _timerPanel.setLayout(new FlowLayout());
-        _timerPanel.setBackground(Color.GRAY);
+        _timerPanel.setBorder(BorderFactory.createTitledBorder("TIMER"));
         add(_timerPanel, BorderLayout.PAGE_START);
 
         _timerLabel = new JLabel("Simulation hasn't started yet");
+        _timerLabel.setVerticalAlignment(JLabel.TOP);
         _timerPanel.add(_timerLabel);
 
         _labelHidden = false;

@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Color;
 import java.awt.event.*;
 
 public class InfoFrame extends JFrame {
@@ -34,6 +36,8 @@ public class InfoFrame extends JFrame {
         _text1Panel = new JPanel();
         _text1Panel.setLayout(new FlowLayout());
         _text1 = new JLabel("SIMULATION CANCELLED");
+        _text1.setFont(new Font("Impact", Font.BOLD, 16));
+        _text1.setForeground(Color.RED);
         _text1Panel.add(_text1);
         _centerPanel.add(_text1Panel);
 
@@ -46,6 +50,8 @@ public class InfoFrame extends JFrame {
         _text3Panel = new JPanel();
         _text3Panel.setLayout(new FlowLayout());
         _text3 = new JLabel("Current statistics:");
+        _text3.setFont(new Font("Lucida Console", Font.ITALIC, 14));
+        _text3.setForeground(Color.MAGENTA);
         _text3Panel.add(_text3);
         _centerPanel.add(_text3Panel);
 
@@ -66,7 +72,6 @@ public class InfoFrame extends JFrame {
         _text6 = new JLabel();
         _text6Panel.add(_text6);
         _centerPanel.add(_text6Panel);
-        
     }
 
     public InfoFrame(int x, int y) {
