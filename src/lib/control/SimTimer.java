@@ -54,11 +54,13 @@ public class SimTimer {
         _timerSeconds = "Simulation ended";
         _habitat.setTimer(_timerSeconds);
         long finishTime = System.currentTimeMillis() - _startTime;
+        int devCount = Developer.getCount(), manCount = Manager.getCount(), empCount = Employee.getCount();
         String statistics = "\n\n=============\nSimulation cancelled\n=============\n\nSimulation time: " + finishTime + 
-        "\nCurrent statistics:\nDevelopers generated: " + Developer.getCount() + 
-        "\nManagers generated: " + Manager.getCount() + "\nTotal Employees generated: " + Employee.getCount();
+        "\nCurrent statistics:\nDevelopers generated: " + devCount + 
+        "\nManagers generated: " + manCount + "\nTotal Employees generated: " + empCount;
         System.out.println(statistics);
         _habitat.clear();
-        JOptionPane.showMessageDialog(null, statistics, "Statistics", 1);
+        InfoFrame infoFrame = new InfoFrame(_habitat.getX(), _habitat.getY());
+        infoFrame.createFrame(finishTime, devCount, manCount, empCount);
     }
 }

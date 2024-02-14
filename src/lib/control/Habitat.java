@@ -16,7 +16,6 @@ public class Habitat extends JFrame {
     private KeyAction _keyAction;
     JLabel _timerLabel;
     boolean _labelHidden;
-    // SimTimer _timer;
     {
         _labelHidden = false;
         _x = _y = 0;
@@ -45,20 +44,20 @@ public class Habitat extends JFrame {
     public void createFrame() {
         setBounds(200, 200, _x, _y);
         setTitle("SIMULATION");
-        setVisible(true);
-
+        
         _keyAction = new KeyAction();
         addKeyListener(_keyAction);
         _keyAction.setHabitat(this);
-
+        
         _timerPanel = new JPanel();
         _timerLabel = new JLabel();
-
+        
         _timerLabel.setText("Simulation hasn't started yet");
         _timerPanel.add(_timerLabel);
         _timerPanel.setBounds(EXIT_ON_CLOSE, _y, WIDTH, HEIGHT);
         add(_timerPanel);
         
+        setVisible(true);
     }
 
     public void setTimer(final String timerSeconds) { _timerLabel.setText(timerSeconds); }
