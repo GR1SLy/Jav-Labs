@@ -1,8 +1,7 @@
 package lib.employee;
 
-import lib.control.IBehaviour;
-
-public class Manager extends Employee implements IBehaviour {
+public class Manager extends Employee {
+    
     private static int $generateTime = 0, $generatePercent = 0, $count = 0;
 
     public static void setGenerateTime(final int generateTime) { $generateTime = generateTime; }

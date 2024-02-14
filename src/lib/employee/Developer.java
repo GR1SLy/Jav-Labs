@@ -2,9 +2,8 @@ package lib.employee;
 
 import java.util.Random;
 
-import lib.control.IBehaviour;
-
-public class Developer extends Employee implements IBehaviour {
+public class Developer extends Employee {
+    
     private static int $generateTime = 0, $generateChance = 0, $count = 0;
 
     public static void setGenerateTime(final int generateTime) { $generateTime = generateTime; }

@@ -13,7 +13,7 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.*;
 
-public class InfoFrame extends JFrame {
+class InfoFrame extends JFrame {
     private JPanel _centerPanel, _text1Panel, _text2Panel, _text3Panel, _text4Panel, _text5Panel, _text6Panel;
     private JButton _closeButton;
     private JLabel _text1, _text2, _text3, _text4, _text5, _text6;
@@ -74,11 +74,11 @@ public class InfoFrame extends JFrame {
         _centerPanel.add(_text6Panel);
     }
 
-    public InfoFrame(int x, int y) {
+    InfoFrame(int x, int y) {
         setBounds(x / 2 - 150, y / 2 - 150, 300, 300);
     }
 
-    public void createFrame(long finishTime, int devCount, int manCount, int empCount) {
+    void createFrame(long finishTime, int devCount, int manCount, int empCount) {
         setTitle("INFORMATION");
         _text2.setText("Simulation time: " + finishTime + " seconds");
         _text4.setText("Developers created: " + devCount);

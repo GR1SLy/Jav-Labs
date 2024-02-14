@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 
-public class KeyAction implements KeyListener {
+class KeyAction implements KeyListener {
     private int keyCode;
     private SimTimer _timer;
     private Habitat _hbt;

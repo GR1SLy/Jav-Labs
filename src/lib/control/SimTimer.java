@@ -5,7 +5,7 @@ import java.util.TimerTask;
 
 import lib.employee.*;
 
-public class SimTimer {
+class SimTimer {
     private Timer _timer;
     private int _updateTime;
     private long _startTime, _currentTime;

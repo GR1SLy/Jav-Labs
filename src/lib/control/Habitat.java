@@ -1,7 +1,6 @@
 package lib.control;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.util.Vector;
 
@@ -67,9 +66,9 @@ public class Habitat extends JFrame {
         setVisible(true);
     }
 
-    public void setTimer(final String timerSeconds) { _timerLabel.setText(timerSeconds); }
+    void setTimer(final String timerSeconds) { _timerLabel.setText(timerSeconds); }
 
-    public void clear() { _employeeVector.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
+    void clear() { _employeeVector.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
 
     /**
      * Creates new employees

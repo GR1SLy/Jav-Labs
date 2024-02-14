@@ -1,6 +1,8 @@
 package lib.employee;
 
-public abstract class Employee {
+import lib.control.IBehaviour;
+
+public abstract class Employee implements IBehaviour{
 
     static int $count = 0;
 
