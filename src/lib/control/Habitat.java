@@ -2,7 +2,8 @@ package lib.control;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.util.Vector;
+import java.awt.Graphics;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -14,8 +15,8 @@ import lib.employee.*;
 
 public class Habitat extends JFrame {
     private int _x, _y;
-    private Vector<Employee> _employeeVector;
-    private JPanel _timerPanel;
+    private ArrayList<Employee> _employeeArray;
+    private JPanel _timerPanel, _graphicsPanel;
     private KeyAction _keyAction;
     JLabel _timerLabel;
     boolean _labelHidden;
@@ -34,7 +35,18 @@ public class Habitat extends JFrame {
 
         _labelHidden = false;
         _x = _y = 0;
-        _employeeVector = new Vector<Employee>();
+        _employeeArray = new ArrayList<Employee>();
+
+        _graphicsPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                for (Employee employee : _employeeArray) {
+                    employee.draw(g);
+                }
+            }
+        };
+        add(_graphicsPanel, BorderLayout.CENTER);
     }
 
     /**
@@ -66,9 +78,15 @@ public class Habitat extends JFrame {
         setVisible(true);
     }
 
+    void moveEmployees() {
+        for (Employee emp : _employeeArray) {
+            emp.move();
+        }
+    }
+
     void setTimer(final String timerSeconds) { _timerLabel.setText(timerSeconds); }
 
-    void clear() { _employeeVector.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
+    void clear() { _employeeArray.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
 
     /**
      * Creates new employees
@@ -76,19 +94,21 @@ public class Habitat extends JFrame {
      */
     public void update(final long time) {
         System.out.println("Trying to generate employee:\nCurrent time: " + time);
-
+        
         if (new Developer().generate(time)) {
-            _employeeVector.addElement(new Developer());
+            _employeeArray.add(new Developer(_x, _y));
             System.out.println("New Developer generated!\nCurrent count: " + Developer.getCount());
         }
-
+        
         if (new Manager().generate(time)) {
-            _employeeVector.addElement(new Manager());
+            _employeeArray.add(new Manager(_x, _y));
             System.out.println("New Manager generated!\nCurrent count: " + Manager.getCount());
         }
-
+        
         System.out.println("Current employees count: " + Employee.getCount());
-        System.out.println(_employeeVector);
+        // System.out.println(_employeeArray);
+        
+        _graphicsPanel.repaint();
     }
 
     static int findUpdateTime(int devTime, int manTime) {

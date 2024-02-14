@@ -11,6 +11,7 @@ class SimTimer {
     private long _startTime, _currentTime;
     private String _timerSeconds;
     private Habitat _habitat;
+    private InfoFrame _infoFrame;
     {
         _startTime = _currentTime = 0;
         _timerSeconds = "Simulation hsn't started yet";
@@ -39,6 +40,7 @@ class SimTimer {
                 else _timerSeconds = "Time: 0 seconds";
                 _habitat.setTimer(_timerSeconds);
                 _currentTime += 1000;
+                _habitat.moveEmployees();
             }
         }, 0, 1000);
     }
@@ -55,7 +57,7 @@ class SimTimer {
         "\nManagers generated: " + manCount + "\nTotal Employees generated: " + empCount;
         System.out.println(statistics);
         _habitat.clear();
-        InfoFrame infoFrame = new InfoFrame(_habitat.getX(), _habitat.getY());
-        infoFrame.createFrame(finishTime, devCount, manCount, empCount);
+        _infoFrame = new InfoFrame(_habitat.getX(), _habitat.getY());
+        _infoFrame.createFrame(finishTime, devCount, manCount, empCount);
     }
 }
