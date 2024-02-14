@@ -1,5 +1,8 @@
 package lib.control;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -17,6 +20,17 @@ public class Habitat extends JFrame {
     JLabel _timerLabel;
     boolean _labelHidden;
     {
+        setTitle("SIMULATION");
+        setLayout(new BorderLayout());
+
+        _timerPanel = new JPanel();
+        _timerPanel.setLayout(new FlowLayout());
+        _timerPanel.setBackground(Color.GRAY);
+        add(_timerPanel, BorderLayout.PAGE_START);
+
+        _timerLabel = new JLabel("Simulation hasn't started yet");
+        _timerPanel.add(_timerLabel);
+
         _labelHidden = false;
         _x = _y = 0;
         _employeeVector = new Vector<Employee>();
@@ -43,19 +57,10 @@ public class Habitat extends JFrame {
 
     public void createFrame() {
         setBounds(200, 200, _x, _y);
-        setTitle("SIMULATION");
         
         _keyAction = new KeyAction();
         addKeyListener(_keyAction);
         _keyAction.setHabitat(this);
-        
-        _timerPanel = new JPanel();
-        _timerLabel = new JLabel();
-        
-        _timerLabel.setText("Simulation hasn't started yet");
-        _timerPanel.add(_timerLabel);
-        _timerPanel.setBounds(EXIT_ON_CLOSE, _y, WIDTH, HEIGHT);
-        add(_timerPanel);
         
         setVisible(true);
     }

@@ -3,20 +3,16 @@ package lib.control;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.JOptionPane;
-
 import lib.employee.*;
 
 public class SimTimer {
     private Timer _timer;
     private int _updateTime;
     private long _startTime, _currentTime;
-    private boolean _started;
     private String _timerSeconds;
     private Habitat _habitat;
     {
         _startTime = _currentTime = 0;
-        _started = false;
         _timerSeconds = "Simulation hsn't started yet";
     }
 
@@ -28,8 +24,7 @@ public class SimTimer {
     void setHabitat(final Habitat hbt) { _habitat = hbt; }
 
     void start() {
-        if (_started) _timer = new Timer();
-        _started = true;
+        _timer = new Timer();
         _startTime = System.currentTimeMillis();
         System.out.println("\nSimulation has been started");
         _timer.schedule(new TimerTask() {
