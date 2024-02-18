@@ -35,6 +35,7 @@ public class ModalWindow extends JFrame {
         _labelArea.setText("SIMULATION STATISTICS");
         _labelArea.setForeground(Color.RED);
         _labelArea.setFont(new Font("Impact", Font.BOLD, 16));
+        _labelArea.setFocusable(false);
         _labelPanel.add(_labelArea);
         
         _infoPanel = new JPanel();
@@ -44,6 +45,7 @@ public class ModalWindow extends JFrame {
         _infoArea = new JTextArea();
         _infoArea.setEditable(false);
         _infoArea.setFont(new Font("Lucida Console", Font.ITALIC, 14));
+        _infoArea.setFocusable(false);
         _infoPanel.add(_infoArea);
 
         _controlPanel = new JPanel();

@@ -5,7 +5,6 @@ import java.util.TimerTask;
 
 class SimTimer {
     private Timer _timer;
-    private int _updateTime;
     private long _currentTime, _totalTime;
     private String _timerSeconds;
     private Habitat _habitat;
@@ -17,15 +16,17 @@ class SimTimer {
         _timerSeconds = "Simulation hsn't started yet";
     }
 
-    SimTimer(final int updateTime) {
+    SimTimer() {
         _timer = new Timer();
-        _updateTime = updateTime * 1000;
     }
 
     void setHabitat(final Habitat hbt) { _habitat = hbt; }
 
     
     void start() {
+        _habitat._controlPanel._startButton.setEnabled(false);
+        _habitat._controlPanel._stopButton.setEnabled(true);
+        _habitat._backToMenuButton.setEnabled(false);
         _timer = new Timer();
         _isRunning = true;
         System.out.println("\nSimulation has been started");
@@ -33,7 +34,7 @@ class SimTimer {
             public void run() {
                 if (_currentTime != 0) { 
                     _timerSeconds = "Time: " + _currentTime / 1000 + " seconds";
-                    if (_currentTime % _updateTime == 0) {
+                    if (_currentTime % _habitat._updateTime == 0) {
                         System.out.println("\n==============\nNEW GENERATION\n==============\n");
                         _habitat.update(_currentTime);
                     }
@@ -47,6 +48,9 @@ class SimTimer {
     }
     
     void stop() {
+        _habitat._controlPanel._startButton.setEnabled(true);
+        _habitat._controlPanel._stopButton.setEnabled(false);
+        _habitat._backToMenuButton.setEnabled(true);
         _isRunning = false;
         if (!_isPaused) _timer.cancel();
         _totalTime = _currentTime;
@@ -70,7 +74,7 @@ class SimTimer {
             public void run() {
                 if (_currentTime != 0) { 
                     _timerSeconds = "Time: " + _currentTime / 1000 + " seconds";
-                    if (_currentTime % _updateTime == 0) {
+                    if (_currentTime % _habitat._updateTime == 0) {
                         System.out.println("\n==============\nNEW GENERATION\n==============\n");
                         _habitat.update(_currentTime);
                     }

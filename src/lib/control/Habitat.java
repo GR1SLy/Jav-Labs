@@ -1,13 +1,17 @@
 package lib.control;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,16 +22,62 @@ import lib.employee.*;
 public class Habitat extends JFrame {
     private int _x, _y;
     private ArrayList<Employee> _employeeArray;
-    private JPanel _workingPanel, _timerPanel, _graphicsPanel;
-    private ControlPanel _controlPanel;
+    private JPanel _cardPanel, _mainPanel, _workingPanel, _timerPanel, _graphicsPanel;
+    private MenuPanel _menuPanel;
+    private JButton _menuButton;
+    JButton _backToMenuButton;
+    ControlPanel _controlPanel;
     JLabel _timerLabel;
+    int _updateTime;
     {
         setTitle("SIMULATION");
         setLayout(new BorderLayout());
 
+        _cardPanel = new JPanel();
+        _cardPanel.setLayout(new CardLayout());
+        add(_cardPanel, BorderLayout.CENTER);
+
+        _menuPanel = new MenuPanel();
+        _cardPanel.add(_menuPanel);
+
+        _menuButton = _menuPanel.getStartButton();
+        _menuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ((CardLayout)_cardPanel.getLayout()).next(_cardPanel);
+                Developer.setGenerateTime(_menuPanel._generateDevTime);
+                Developer.setGenerateChance(_menuPanel._generateDevChance);
+                Manager.setGenerateTime(_menuPanel._generateManTime);
+                Manager.setGeneratePercent(_menuPanel._generateManPercent);
+                _updateTime = findUpdateTime(_menuPanel._generateDevTime, _menuPanel._generateManTime) * 1000;
+
+                System.out.println("DevGenTime: " + Developer.getGenerateTime() + "\tManGenTime: " + Manager.getGenerateTime()
+                + "\nFrom menu:"
+                + "\nDevGenTime: " + _menuPanel._generateDevTime + "\tManGenTime: " + _menuPanel._generateManTime
+                + "\nGenerate Time: " + _updateTime);
+                
+                _controlPanel._startButton.doClick();
+                requestFocus();
+            }
+        });
+        
+        _mainPanel = new JPanel();
+        _mainPanel.setLayout(new BorderLayout());
+        _cardPanel.add(_mainPanel);
+
+        _backToMenuButton = new JButton("Back to menu");
+        _backToMenuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ((CardLayout)_cardPanel.getLayout()).previous(_cardPanel);
+            } 
+        });
+        _backToMenuButton.setFocusable(false);
+        _mainPanel.add(_backToMenuButton, BorderLayout.PAGE_END);
+
         _workingPanel = new JPanel();
         _workingPanel.setLayout(new BorderLayout());
-        add(_workingPanel, BorderLayout.CENTER);
+        _mainPanel.add(_workingPanel, BorderLayout.CENTER);
 
         _timerPanel = new JPanel();
         _timerPanel.setLayout(new FlowLayout());
@@ -74,6 +124,11 @@ public class Habitat extends JFrame {
         Manager.setGeneratePercent(managerGeneratePercent);
         Developer.setGenerateTime(developerGenerateTime);
         Developer.setGenerateChance(developerGenerateChance);
+    }
+
+    public Habitat(int x, int y) {
+        _x = x;
+        _y = y;
     }
 
     public void createFrame() {
@@ -129,7 +184,7 @@ public class Habitat extends JFrame {
         _graphicsPanel.repaint();
     }
 
-    static int findUpdateTime(int devTime, int manTime) {
+    int findUpdateTime(int devTime, int manTime) {
         if(devTime == manTime) return devTime;
 
         int minTime;

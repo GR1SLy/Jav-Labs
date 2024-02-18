@@ -15,9 +15,9 @@ import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
     JButton _startButton, _stopButton, _timeButton;
+    SimTimer _timer;
     private JToggleButton _infoButton;
     private boolean _showTime, _showInfo;
-    private SimTimer _timer;
     private JPanel _startPanel, _stopPanel, _infoPanel, _timePanel;
     private Habitat _habitat;
 
@@ -43,14 +43,15 @@ public class ControlPanel extends JPanel {
         _startPanel.add(_startButton);
 
         _stopButton = new JButton("Stop");
+        _stopButton.setEnabled(false);
         _stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (_timer.isRunning()) {
+
                     long totalTime = _timer.pause();
 
                     int devCount = Developer.getCount(), manCount = Manager.getCount(), empCount = Employee.getCount();
-                    // long totalTime = _timer.getTotalTime();
 
                     System.out.println("\n\n=================\nSimulation paused\n=================\n\nSimulation time: " + totalTime + 
                     "\nCurrent statistics:\nDevelopers generated: " + devCount + 
@@ -106,8 +107,7 @@ public class ControlPanel extends JPanel {
     }
 
     void setHabitat(Habitat hbt) {
-        int upt = Habitat.findUpdateTime(Developer.getGenerateTime(), Manager.getGenerateTime());
-        _timer = new SimTimer(upt);
+        _timer = new SimTimer();
         _timer.setHabitat(hbt);
         _habitat = hbt;
     }
