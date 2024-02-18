@@ -3,6 +3,8 @@ package lib.control;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -16,24 +18,26 @@ import lib.employee.*;
 public class Habitat extends JFrame {
     private int _x, _y;
     private ArrayList<Employee> _employeeArray;
-    private JPanel _timerPanel, _graphicsPanel;
-    private KeyAction _keyAction;
+    private JPanel _workingPanel, _timerPanel, _graphicsPanel;
+    private ControlPanel _controlPanel;
     JLabel _timerLabel;
-    boolean _labelHidden;
     {
         setTitle("SIMULATION");
         setLayout(new BorderLayout());
 
+        _workingPanel = new JPanel();
+        _workingPanel.setLayout(new BorderLayout());
+        add(_workingPanel, BorderLayout.CENTER);
+
         _timerPanel = new JPanel();
         _timerPanel.setLayout(new FlowLayout());
         _timerPanel.setBorder(BorderFactory.createTitledBorder("TIMER"));
-        add(_timerPanel, BorderLayout.PAGE_START);
+        _workingPanel.add(_timerPanel, BorderLayout.PAGE_START);
 
         _timerLabel = new JLabel("Simulation hasn't started yet");
         _timerLabel.setVerticalAlignment(JLabel.TOP);
         _timerPanel.add(_timerLabel);
 
-        _labelHidden = false;
         _x = _y = 0;
         _employeeArray = new ArrayList<Employee>();
 
@@ -46,7 +50,11 @@ public class Habitat extends JFrame {
                 }
             }
         };
-        add(_graphicsPanel, BorderLayout.CENTER);
+        _workingPanel.add(_graphicsPanel, BorderLayout.CENTER);
+
+        _controlPanel = new ControlPanel();
+        _workingPanel.add(_controlPanel, BorderLayout.PAGE_END);
+
     }
 
     /**
@@ -70,10 +78,21 @@ public class Habitat extends JFrame {
 
     public void createFrame() {
         setBounds(200, 200, _x, _y);
-        
-        _keyAction = new KeyAction();
-        addKeyListener(_keyAction);
-        _keyAction.setHabitat(this);
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent event) {
+                char keyChar = event.getKeyChar();
+                System.out.println("Key pressed: " + keyChar);
+                switch (keyChar) {
+                    case 'B', 'b', 'И', 'и' -> _controlPanel._startButton.doClick();
+                    case 'E', 'e', 'У', 'у' -> _controlPanel._stopButton.doClick();
+                    case 'T', 't', 'Е', 'е' -> _controlPanel._timeButton.doClick();
+                } 
+            }
+        });
+
+        _controlPanel.setHabitat(this);
         
         setVisible(true);
     }
@@ -106,7 +125,6 @@ public class Habitat extends JFrame {
         }
         
         System.out.println("Current employees count: " + Employee.getCount());
-        // System.out.println(_employeeArray);
         
         _graphicsPanel.repaint();
     }
