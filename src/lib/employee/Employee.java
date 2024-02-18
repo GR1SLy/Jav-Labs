@@ -10,6 +10,10 @@ public abstract class Employee implements IBehaviour{
 
     static int $count = 0;
 
+    public Employee() {
+        _x = _y = 0;
+    }
+
     public static int getCount() { return $count; }
 
     public static void clear() { $count = 0; }

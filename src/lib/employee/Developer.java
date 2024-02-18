@@ -35,8 +35,8 @@ public class Developer extends Employee {
 
     public Developer(final int maxX, final int maxY) {
         Random rnd = new Random();
-        _x = rnd.nextInt(maxX - 30);
-        _y = rnd.nextInt(maxY - 30);
+        _x = rnd.nextInt(0, maxX - _imageSize);
+        _y = rnd.nextInt(0, maxY - _imageSize);
     }
 
     @Override

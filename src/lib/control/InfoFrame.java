@@ -80,7 +80,7 @@ class InfoFrame extends JFrame {
 
     void createFrame(long finishTime, int devCount, int manCount, int empCount) {
         setTitle("INFORMATION");
-        _text2.setText("Simulation time: " + finishTime + " seconds");
+        _text2.setText("Simulation time: " + finishTime / 1000 + " seconds");
         _text4.setText("Developers created: " + devCount);
         _text5.setText("Managers created: " + manCount);
         _text6.setText("Total employees created: " + empCount);

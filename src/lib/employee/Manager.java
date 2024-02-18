@@ -35,8 +35,8 @@ public class Manager extends Employee {
 
     public Manager(final int maxX, final int maxY) {
         Random rnd = new Random();
-        _x = rnd.nextInt(maxX);
-        _y = rnd.nextInt(maxY);
+        _x = rnd.nextInt(0, maxX - _imageSize);
+        _y = rnd.nextInt(0, maxY - _imageSize);
     }
 
     @Override
