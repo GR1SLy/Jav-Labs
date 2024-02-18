@@ -40,7 +40,7 @@ public class MenuPanel extends JPanel {
                     System.out.println(_generateDevTime);
                 } catch (NumberFormatException ec) {
                     System.out.println("INCORRECT Dev Time: " + s);
-                    _getDevTime.setText("");
+                    _getDevTime.setText("" + _generateDevTime);
                     JOptionPane.showMessageDialog(null, "Invalid developer's generate time", "ERROR", 2);
                 }
             }
@@ -55,7 +55,7 @@ public class MenuPanel extends JPanel {
                     System.out.println(_generateManTime);
                 } catch (NumberFormatException ec) {
                     System.out.println("INCORRECT Man Time " + s);
-                    _getManTime.setText("");
+                    _getManTime.setText("" + _generateManTime);
                     JOptionPane.showMessageDialog(null, "Invalid manager's time", "ERROR", 2);
                 }
             }
@@ -75,6 +75,7 @@ public class MenuPanel extends JPanel {
                 System.out.println(_generateDevChance);
             }
         });
+        _devChance.setSelectedItem(50);
 
         _manPercent = new JComboBox<Integer>();
         for (int i = 0; i <= 100; i += 10) {
@@ -87,6 +88,7 @@ public class MenuPanel extends JPanel {
                 System.out.println(_generateManPercent);
             }
         });
+        _manPercent.setSelectedItem(50);
 
         _welcomeLabel = new JLabel("Welcome");
         _welcomeLabel.setFont(new Font("Impact", Font.BOLD, 16));
