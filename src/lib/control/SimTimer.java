@@ -3,17 +3,17 @@ package lib.control;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import lib.employee.*;
-
 class SimTimer {
     private Timer _timer;
     private int _updateTime;
-    private long _startTime, _currentTime;
+    private long _currentTime, _totalTime;
     private String _timerSeconds;
     private Habitat _habitat;
-    private InfoFrame _infoFrame;
+    private boolean _isPaused, _isRunning;
+
     {
-        _startTime = _currentTime = 0;
+        _isPaused = _isRunning = false;
+        _currentTime = 0;
         _timerSeconds = "Simulation hsn't started yet";
     }
 
@@ -24,9 +24,10 @@ class SimTimer {
 
     void setHabitat(final Habitat hbt) { _habitat = hbt; }
 
+    
     void start() {
         _timer = new Timer();
-        _startTime = System.currentTimeMillis();
+        _isRunning = true;
         System.out.println("\nSimulation has been started");
         _timer.schedule(new TimerTask() {
             public void run() {
@@ -46,18 +47,44 @@ class SimTimer {
     }
     
     void stop() {
-        _timer.cancel();
+        _isRunning = false;
+        if (!_isPaused) _timer.cancel();
+        _totalTime = _currentTime;
         _currentTime = 0;
         _timerSeconds = "Simulation ended";
         _habitat.setTimer(_timerSeconds);
-        long finishTime = System.currentTimeMillis() - _startTime;
-        int devCount = Developer.getCount(), manCount = Manager.getCount(), empCount = Employee.getCount();
-        String statistics = "\n\n=============\nSimulation cancelled\n=============\n\nSimulation time: " + finishTime + 
-        "\nCurrent statistics:\nDevelopers generated: " + devCount + 
-        "\nManagers generated: " + manCount + "\nTotal Employees generated: " + empCount;
-        System.out.println(statistics);
         _habitat.clear();
-        _infoFrame = new InfoFrame(_habitat.getX(), _habitat.getY());
-        _infoFrame.createFrame(finishTime, devCount, manCount, empCount);
     }
+
+    long pause() {
+        System.out.println("\nSimulation paused\n");
+        _timer.cancel();
+        _isPaused = true;
+        return _currentTime;
+    }
+
+    void resume() {
+        System.out.println("\nSimulation resumed\n");
+        _timer = new Timer();
+        _timer.schedule(new TimerTask() {
+            public void run() {
+                if (_currentTime != 0) { 
+                    _timerSeconds = "Time: " + _currentTime / 1000 + " seconds";
+                    if (_currentTime % _updateTime == 0) {
+                        System.out.println("\n==============\nNEW GENERATION\n==============\n");
+                        _habitat.update(_currentTime);
+                    }
+                }
+                else _timerSeconds = "Time: 0 seconds";
+                _habitat.setTimer(_timerSeconds);
+                _currentTime += 1000;
+                _habitat.moveEmployees();
+            }
+        }, 0, 1000);
+        _isPaused = false;
+    }
+
+    long getTotalTime() { return _totalTime; }
+
+    boolean isRunning() { return _isRunning; }
 }

@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
 import lib.employee.Developer;
+import lib.employee.Employee;
 import lib.employee.Manager;
 
 import java.awt.FlowLayout;
@@ -15,7 +16,7 @@ import java.awt.event.ActionListener;
 public class ControlPanel extends JPanel {
     JButton _startButton, _stopButton, _timeButton;
     private JToggleButton _infoButton;
-    private boolean _showTime, _showInfo, _isStarted;
+    private boolean _showTime, _showInfo;
     private SimTimer _timer;
     private JPanel _startPanel, _stopPanel, _infoPanel, _timePanel;
     private Habitat _habitat;
@@ -23,7 +24,6 @@ public class ControlPanel extends JPanel {
     {
         _showTime = true;
         _showInfo = true;
-        _isStarted = false;
 
         setLayout(new GridLayout(2, 2));
 
@@ -31,9 +31,8 @@ public class ControlPanel extends JPanel {
         _startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!_isStarted) {
+                if (!_timer.isRunning()) {
                     _timer.start();
-                    _isStarted = true;
                 }
             }
         });
@@ -47,9 +46,18 @@ public class ControlPanel extends JPanel {
         _stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (_isStarted) {
-                    _timer.stop();
-                    _isStarted = false;
+                if (_timer.isRunning()) {
+                    long totalTime = _timer.pause();
+
+                    int devCount = Developer.getCount(), manCount = Manager.getCount(), empCount = Employee.getCount();
+                    // long totalTime = _timer.getTotalTime();
+
+                    System.out.println("\n\n=================\nSimulation paused\n=================\n\nSimulation time: " + totalTime + 
+                    "\nCurrent statistics:\nDevelopers generated: " + devCount + 
+                    "\nManagers generated: " + manCount + "\nTotal Employees generated: " + empCount);
+                    ModalWindow modalWindow = new ModalWindow(_timer);
+                    if (_showInfo) modalWindow.showWindow(totalTime, devCount, manCount, empCount);
+                    else _timer.stop();
                 }
             }
         });
