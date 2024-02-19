@@ -43,6 +43,7 @@ class SimTimer {
                 _habitat.setTimer(_timerSeconds);
                 _currentTime += 1000;
                 _habitat.moveEmployees();
+                _habitat.terminateCheck(_currentTime);
             }
         }, 0, 1000);
     }

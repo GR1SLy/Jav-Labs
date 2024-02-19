@@ -47,13 +47,17 @@ public class Habitat extends JFrame {
                 ((CardLayout)_cardPanel.getLayout()).next(_cardPanel);
                 Developer.setGenerateTime(_menuPanel._generateDevTime);
                 Developer.setGenerateChance(_menuPanel._generateDevChance);
+                Developer.setLifeTime(_menuPanel._devLifeTime);
                 Manager.setGenerateTime(_menuPanel._generateManTime);
                 Manager.setGeneratePercent(_menuPanel._generateManPercent);
+                Manager.setLifeTime(_menuPanel._manLifeTime);
                 _updateTime = findUpdateTime(_menuPanel._generateDevTime, _menuPanel._generateManTime) * 1000;
 
                 System.out.println("DevGenTime: " + Developer.getGenerateTime() + "\tManGenTime: " + Manager.getGenerateTime()
+                + "\nDevLifeTime: " + Developer.getLifeTime() + "\tManLifeTime: " + Manager.getLifeTime()
                 + "\nFrom menu:"
                 + "\nDevGenTime: " + _menuPanel._generateDevTime + "\tManGenTime: " + _menuPanel._generateManTime
+                + "\nDevLifeTime: " + _menuPanel._devLifeTime + "\tManLifeTime: " + _menuPanel._manLifeTime
                 + "\nGenerate Time: " + _updateTime);
                 
                 _controlPanel._startButton.doClick();
@@ -153,8 +157,8 @@ public class Habitat extends JFrame {
     }
 
     void moveEmployees() {
-        for (Employee emp : _employeeArray) {
-            emp.move();
+        for (Employee employee : _employeeArray) {
+            employee.move();
         }
     }
 
@@ -170,17 +174,32 @@ public class Habitat extends JFrame {
         System.out.println("Trying to generate employee:\nCurrent time: " + time);
         
         if (new Developer().generate(time)) {
-            _employeeArray.add(new Developer(_x, _y));
+            _employeeArray.add(new Developer(_x, _y, time));
             System.out.println("New Developer generated!\nCurrent count: " + Developer.getCount());
         }
         
         if (new Manager().generate(time)) {
-            _employeeArray.add(new Manager(_x, _y));
+            _employeeArray.add(new Manager(_x, _y, time));
             System.out.println("New Manager generated!\nCurrent count: " + Manager.getCount());
         }
         
         System.out.println("Current employees count: " + Employee.getCount());
         
+        _graphicsPanel.repaint();
+    }
+
+    public void terminateCheck(final long time) {
+        ArrayList<Employee> terminateArray = new ArrayList<Employee>();
+        for (Employee employee : _employeeArray) {
+            if (employee.terminate(time)) {
+                System.out.println("Terminating " + employee + " id: " + employee.hashCode());
+                terminateArray.add(employee);
+            }
+        }
+        for (Employee employee : terminateArray) {
+            _employeeArray.remove(employee);
+        }
+        if (terminateArray.size() > 0) { System.out.println(_employeeArray + "\n--\n" + terminateArray); }
         _graphicsPanel.repaint();
     }
 

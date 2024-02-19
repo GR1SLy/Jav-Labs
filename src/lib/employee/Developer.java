@@ -10,7 +10,7 @@ import java.awt.Color;
 
 public class Developer extends Employee {
     
-    private static int $generateTime = 0, $generateChance = 0, $count = 0;
+    private static int $generateTime = 0, $generateChance = 0, $count = 0, $lifeTime = 0;
 
     private static Image _img = new ImageIcon("../lib/employee/images/developer.png").getImage();
 
@@ -25,6 +25,10 @@ public class Developer extends Employee {
 
     public static int getGenerateChance() { return $generateChance; }
 
+    public static void setLifeTime(final int lifeTime) { $lifeTime = lifeTime * 1000; }
+
+    public static int getLifeTime() { return $lifeTime; }
+
     public static int getCount() { return $count; }
 
     public static void clear() { $count = 0; }
@@ -33,10 +37,11 @@ public class Developer extends Employee {
         super();
     }
 
-    public Developer(final int maxX, final int maxY) {
+    public Developer(final int maxX, final int maxY, final long time) {
         Random rnd = new Random();
         _x = rnd.nextInt(0, maxX - _imageSize);
         _y = rnd.nextInt(0, maxY - _imageSize);
+        _birthTime = time;
     }
 
     @Override
@@ -50,8 +55,19 @@ public class Developer extends Employee {
     }
 
     @Override
+    public boolean terminate(final long time) {
+        /* if (time - _birthTime >= $lifeTime) { $count--; Employee.$count--; return true; }
+        else return false; */
+        boolean result = false;
+        if (time - _birthTime >= $lifeTime) { $count--; Employee.$count--; result = true; }
+        else result = false;
+        if (result) System.out.println("Time: " + time + " BirthTime: " + _birthTime + " result: " + result);
+        return result;
+    }
+
+    @Override
     public String toString() { 
-        return "Employee: Developer Generate time: " + $generateTime + " Generate chance: " + $generateChance;
+        return "Developer Generate time: " + $generateTime + " Generate chance: " + $generateChance + " LifeTime: " + $lifeTime + " BirthTime: " + _birthTime;
     }
 
     @Override

@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 
 public class Manager extends Employee {
     
-    private static int $generateTime = 0, $generatePercent = 0, $count = 0;
+    private static int $generateTime = 0, $generatePercent = 0, $count = 0, $lifeTime;
 
     private static Image _img = new ImageIcon("../lib/employee/images/manager.png").getImage();
 
@@ -25,6 +25,10 @@ public class Manager extends Employee {
 
     public static int getGeneratePercent() { return $generatePercent; }
 
+    public static void setLifeTime(final int lifeTime) { $lifeTime = lifeTime * 1000; }
+
+    public static int getLifeTime() { return $lifeTime; }
+
     public static int getCount() { return $count; }
     
     public static void clear() { $count = 0; }
@@ -33,10 +37,12 @@ public class Manager extends Employee {
         super();
     }
 
-    public Manager(final int maxX, final int maxY) {
+    public Manager(final int maxX, final int maxY, final long time) {
         Random rnd = new Random();
         _x = rnd.nextInt(0, maxX - _imageSize);
         _y = rnd.nextInt(0, maxY - _imageSize);
+        _birthTime = time;
+
     }
 
     @Override
@@ -50,8 +56,17 @@ public class Manager extends Employee {
     }
 
     @Override
+    public boolean terminate(final long time) {
+        boolean result = false;
+        if (time - _birthTime >= $lifeTime) { $count--; Employee.$count--; result = true; }
+        else result = false;
+        if (result) System.out.println("Time: " + time + " BirthTime: " + _birthTime + " result: " + result);
+        return result;
+    }
+
+    @Override
     public String toString() { 
-        return "Employee: Manager Generate time: " + $generateTime + " Generate percent: " + $generatePercent; 
+        return "Manager Generate time: " + $generateTime + " Generate percent: " + $generatePercent + " LifeTime: " + $lifeTime + " BirthTime: " + _birthTime; 
     }
 
     @Override
