@@ -72,11 +72,11 @@ public class ModalWindow extends JFrame {
         _controlPanel.add(_cancelButton);
     }
 
-    public ModalWindow(final SimTimer timer) {
+    ModalWindow(final SimTimer timer) {
         _timer = timer;
     }
     
-    public void showWindow(long totalTime, int devCount, int manCount, int empCount) {
+    void showWindow(long totalTime, int devCount, int manCount, int empCount) {
         _infoArea.setText("Time: " + totalTime / 1000 + " seconds"
          + "\nDevelopers count: " + devCount
          + "\nManagers count: " + manCount

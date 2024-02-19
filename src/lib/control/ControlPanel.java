@@ -4,9 +4,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-import lib.employee.Developer;
-import lib.employee.Employee;
-import lib.employee.Manager;
+import lib.employee.*;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -15,7 +13,7 @@ import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
     JButton _startButton, _stopButton, _timeButton;
-    SimTimer _timer;
+    private SimTimer _timer;
     private JToggleButton _infoButton;
     private boolean _showTime, _showInfo;
     private JPanel _startPanel, _stopPanel, _infoPanel, _timePanel;

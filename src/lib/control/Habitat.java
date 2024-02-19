@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -18,9 +19,8 @@ import javax.swing.JPanel;
 
 import lib.employee.*;
 
-
 public class Habitat extends JFrame {
-    private int _x, _y;
+    private int _x, _y, _width, _height;
     private ArrayList<Employee> _employeeArray;
     private JPanel _cardPanel, _mainPanel, _workingPanel, _timerPanel, _graphicsPanel;
     private MenuPanel _menuPanel;
@@ -112,32 +112,35 @@ public class Habitat extends JFrame {
     }
 
     /**
-     * 
-     * @param x - frame width
-     * @param y - frame height
-     * @param developerGenerateTime
-     * @param managerGenerateTime
-     * @param developerGenerateChance
-     * @param managerGeneratePercent
+     * Default constructor
+     * @param width = 500
+     * @param height = 500
+     * @param x = @param y = 0
      */
-    public Habitat(final int x, final int y, final int developerGenerateTime, 
-    final int managerGenerateTime, final int developerGenerateChance, final int managerGeneratePercent) {
-        _x = x;
-        _y = y;
-        Manager.setGenerateTime(managerGenerateTime);
-        Manager.setGeneratePercent(managerGeneratePercent);
-        Developer.setGenerateTime(developerGenerateTime);
-        Developer.setGenerateChance(developerGenerateChance);
+    public Habitat() {
+        _width = 500;
+        _height = 500;
     }
 
-    public Habitat(int x, int y) {
+    /**
+     * Habitat constructor with bounds
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
+    public Habitat(int x, int y, int width, int height) {
         _x = x;
         _y = y;
+        _width = width;
+        _height = height;
     }
 
+    /**
+     * Creates a new frame with start menu
+     */
     public void createFrame() {
-        setBounds(200, 200, _x, _y);
-
+        setBounds(_x, _y, _width, _height);
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent event) {
@@ -150,10 +153,9 @@ public class Habitat extends JFrame {
                 } 
             }
         });
+        setVisible(true);
 
         _controlPanel.setHabitat(this);
-        
-        setVisible(true);
     }
 
     void moveEmployees() {
@@ -170,16 +172,18 @@ public class Habitat extends JFrame {
      * Creates new employees
      * @param time - time from start of simulation
      */
-    public void update(final long time) {
+    void update(final long time) {
         System.out.println("Trying to generate employee:\nCurrent time: " + time);
         
         if (new Developer().generate(time)) {
-            _employeeArray.add(new Developer(_x, _y, time));
+            Rectangle rect = _graphicsPanel.getBounds();
+            _employeeArray.add(new Developer(rect.width, rect.height, time));
             System.out.println("New Developer generated!\nCurrent count: " + Developer.getCount());
         }
         
         if (new Manager().generate(time)) {
-            _employeeArray.add(new Manager(_x, _y, time));
+            Rectangle rect = _graphicsPanel.getBounds();
+            _employeeArray.add(new Manager(rect.width, rect.height, time));
             System.out.println("New Manager generated!\nCurrent count: " + Manager.getCount());
         }
         
@@ -188,7 +192,11 @@ public class Habitat extends JFrame {
         _graphicsPanel.repaint();
     }
 
-    public void terminateCheck(final long time) {
+    /**
+     * Terminates employees when lifetime is reached
+     * @param time - time from start of simulation
+     */
+    void terminateCheck(final long time) {
         ArrayList<Employee> terminateArray = new ArrayList<Employee>();
         for (Employee employee : _employeeArray) {
             if (employee.terminate(time)) {
@@ -203,7 +211,7 @@ public class Habitat extends JFrame {
         _graphicsPanel.repaint();
     }
 
-    int findUpdateTime(int devTime, int manTime) {
+    private int findUpdateTime(int devTime, int manTime) {
         if(devTime == manTime) return devTime;
 
         int minTime;
