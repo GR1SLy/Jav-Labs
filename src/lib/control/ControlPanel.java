@@ -104,6 +104,7 @@ public class ControlPanel extends JPanel {
                 _habitat.showCurrentObjects();
             }
         });
+        _objectsButton.setFocusable(false);
 
         _objectsPanel = new JPanel();
         _objectsPanel.setLayout(new FlowLayout());

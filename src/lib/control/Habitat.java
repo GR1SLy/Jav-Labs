@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
@@ -24,9 +25,14 @@ import javax.swing.JPanel;
 import lib.employee.*;
 
 public class Habitat extends JFrame {
+    private class Pair {
+        public Employee emp1, emp2;
+        public Pair() { emp1 = null; emp2 = null; }
+        public boolean isEmpty() { return emp1 == null && emp2 == null; }
+    }
     private int _x, _y, _width, _height;
     private LinkedList<Employee> _employeeList;
-    private HashMap<Integer, Employee> _employeeBirthTime;
+    private HashMap<Long, Pair> _employeeBirthTime;
     private TreeSet<Integer> _employeeID;
     private JPanel _cardPanel, _mainPanel, _workingPanel, _timerPanel, _graphicsPanel;
     private MenuPanel _menuPanel;
@@ -35,6 +41,7 @@ public class Habitat extends JFrame {
     ControlPanel _controlPanel;
     JLabel _timerLabel;
     int _updateTime;
+
     {
         setTitle("SIMULATION");
         setLayout(new BorderLayout());
@@ -116,6 +123,7 @@ public class Habitat extends JFrame {
         _workingPanel.add(_controlPanel, BorderLayout.PAGE_END);
 
         _employeeID = new TreeSet<>();
+        _employeeBirthTime = new HashMap<>();
     }
 
     /**
@@ -181,18 +189,23 @@ public class Habitat extends JFrame {
      */
     void update(final long time) {
         System.out.println("Trying to generate employee:\nCurrent time: " + time);
+        Pair pair = new Pair();
         
         if (new Developer().generate(time)) {
             Rectangle rect = _graphicsPanel.getBounds();
             _employeeList.addLast(new Developer(rect.width, rect.height, time, _employeeID));
+            pair.emp1 = _employeeList.getLast();
             System.out.println("New Developer generated!\nCurrent count: " + Developer.getCount());
         }
         
         if (new Manager().generate(time)) {
             Rectangle rect = _graphicsPanel.getBounds();
             _employeeList.addLast(new Manager(rect.width, rect.height, time, _employeeID));
+            pair.emp2 = _employeeList.getLast();
             System.out.println("New Manager generated!\nCurrent count: " + Manager.getCount());
         }
+
+        if (!pair.isEmpty()) _employeeBirthTime.put(time, pair);
         
         System.out.println("Current employees count: " + Employee.getCount() + "\tIDs: " + _employeeID);
         
@@ -211,16 +224,63 @@ public class Habitat extends JFrame {
                 terminateArray.add(employee);
             }
         }
+
+        long devTime = time - Developer.getLifeTime();
+        long manTime = time - Manager.getLifeTime();
+        if (_employeeBirthTime.containsKey(devTime)) {
+            if (terminateArray.contains(_employeeBirthTime.get(devTime).emp1)) {
+                Pair pair = _employeeBirthTime.get(devTime);
+                pair.emp1 = null;
+                if (pair.isEmpty()) _employeeBirthTime.remove(devTime);
+            }
+        }
+        if (_employeeBirthTime.containsKey(manTime)) {
+            if (terminateArray.contains(_employeeBirthTime.get(manTime).emp2)) {
+                Pair pair = _employeeBirthTime.get(manTime);
+                pair.emp2 = null;
+                if (pair.isEmpty()) _employeeBirthTime.remove(manTime);
+            }
+        }
+
+
         for (Employee employee : terminateArray) {
             _employeeList.remove(employee);
             _employeeID.remove(employee.getID());
         }
+
         if (terminateArray.size() > 0) System.out.println("Terminating:\n" + terminateArray + "\nFrom:\n" + _employeeList);
         _graphicsPanel.repaint();
     }
 
+    /* void terminate(final long time) {
+        long probablyGeneratedDevTime = time - Developer.getLifeTime();
+        long probablyGeneratedManTime = time - Manager.getLifeTime();
+        if (probablyGeneratedDevTime == probablyGeneratedManTime) {
+            if (_employeeBirthTime.containsKey(probablyGeneratedDevTime)) _employeeBirthTime.remove(probablyGeneratedDevTime);
+        }
+        else {
+            if (_employeeBirthTime.containsKey(probablyGeneratedDevTime)) {
+                if (_employeeBirthTime.get(probablyGeneratedDevTime).size() < 2) _employeeBirthTime.remove(probablyGeneratedDevTime);
+                else { _employeeList.remove(_employeeBirthTime.get(probablyGeneratedDevTime).getFirst()); _employeeBirthTime.get(probablyGeneratedDevTime).removeFirst(); }
+            }
+
+            if (_employeeBirthTime.containsKey(probablyGeneratedManTime)) {
+                if (_employeeBirthTime.get(probablyGeneratedManTime).size() < 2) _employeeBirthTime.remove(probablyGeneratedManTime);
+                else { _employeeList.remove(_employeeBirthTime.get(probablyGeneratedManTime).getLast()); _employeeBirthTime.get(probablyGeneratedManTime).removeLast(); }
+            }
+        }
+    }
+ */
     void showCurrentObjects() {
-        JOptionPane.showMessageDialog(null, "Objects", "CURRENT OBJECTS", JOptionPane.INFORMATION_MESSAGE);
+        String employees = "";
+        Employee emp1, emp2;
+        for (Map.Entry<Long, Pair> entry : _employeeBirthTime.entrySet()) {
+            emp1 = entry.getValue().emp1;
+            emp2 = entry.getValue().emp2;
+            if (emp1 != null) employees += emp1 + "\n";
+            if (emp2 != null) employees += emp2 + "\n";
+        }
+        JOptionPane.showMessageDialog(null, employees, "CURRENT OBJECTS", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private int findUpdateTime(int devTime, int manTime) {
