@@ -252,25 +252,6 @@ public class Habitat extends JFrame {
         _graphicsPanel.repaint();
     }
 
-    /* void terminate(final long time) {
-        long probablyGeneratedDevTime = time - Developer.getLifeTime();
-        long probablyGeneratedManTime = time - Manager.getLifeTime();
-        if (probablyGeneratedDevTime == probablyGeneratedManTime) {
-            if (_employeeBirthTime.containsKey(probablyGeneratedDevTime)) _employeeBirthTime.remove(probablyGeneratedDevTime);
-        }
-        else {
-            if (_employeeBirthTime.containsKey(probablyGeneratedDevTime)) {
-                if (_employeeBirthTime.get(probablyGeneratedDevTime).size() < 2) _employeeBirthTime.remove(probablyGeneratedDevTime);
-                else { _employeeList.remove(_employeeBirthTime.get(probablyGeneratedDevTime).getFirst()); _employeeBirthTime.get(probablyGeneratedDevTime).removeFirst(); }
-            }
-
-            if (_employeeBirthTime.containsKey(probablyGeneratedManTime)) {
-                if (_employeeBirthTime.get(probablyGeneratedManTime).size() < 2) _employeeBirthTime.remove(probablyGeneratedManTime);
-                else { _employeeList.remove(_employeeBirthTime.get(probablyGeneratedManTime).getLast()); _employeeBirthTime.get(probablyGeneratedManTime).removeLast(); }
-            }
-        }
-    }
- */
     void showCurrentObjects() {
         String employees = "";
         Employee emp1, emp2;
