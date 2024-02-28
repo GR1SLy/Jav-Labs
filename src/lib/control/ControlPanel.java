@@ -10,20 +10,22 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.Flow;
 
 public class ControlPanel extends JPanel {
-    JButton _startButton, _stopButton, _timeButton, _objectsButton;
+    JButton _startButton, _stopButton, _timeButton;
+    private JButton _stopDevAIButton, _stopManAIButton, _objectsButton;
     private SimTimer _timer;
     private JToggleButton _infoButton;
     private boolean _showTime, _showInfo;
-    private JPanel _startPanel, _stopPanel, _infoPanel, _timePanel, _objectsPanel;
+    private JPanel _startPanel, _stopPanel, _stopDevAIPanel, _stopManAIPanel, _infoPanel, _timePanel, _objectsPanel;
     private Habitat _habitat;
 
     {
         _showTime = true;
         _showInfo = true;
 
-        setLayout(new GridLayout(3, 2));
+        setLayout(new GridLayout(4, 2));
 
         _startButton = new JButton("Start");
         _startButton.addActionListener(new ActionListener() {
@@ -65,6 +67,30 @@ public class ControlPanel extends JPanel {
         _stopPanel = new JPanel();
         _stopPanel.setLayout(new FlowLayout());
         _stopPanel.add(_stopButton);
+
+        _stopDevAIButton = new JButton("Stop developer's AI");
+        _stopDevAIButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+        _stopDevAIButton.setFocusable(false);
+
+        _stopDevAIPanel = new JPanel();
+        _stopDevAIPanel.setLayout(new FlowLayout());
+        _stopDevAIPanel.add(_stopDevAIButton);
+
+        _stopManAIButton = new JButton("Stop manager's AI");
+        _stopManAIButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+        _stopManAIButton.setFocusable(false);
+
+        _stopManAIPanel = new JPanel();
+        _stopManAIPanel.setLayout(new FlowLayout());
+        _stopManAIPanel.add(_stopManAIButton);
 
         _infoButton = new JToggleButton("Show Information");
         _infoButton.addActionListener(new ActionListener() {
@@ -112,6 +138,8 @@ public class ControlPanel extends JPanel {
 
         add(_startPanel);
         add(_stopPanel);
+        add(_stopDevAIPanel);
+        add(_stopManAIPanel);
         add(_infoPanel);
         add(_timePanel);
         add(_objectsPanel);

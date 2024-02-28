@@ -280,6 +280,7 @@ public class Habitat extends JFrame {
             if (emp1 != null) employees += emp1 + "\n";
             if (emp2 != null) employees += emp2 + "\n";
         }
+        if (employees == "") employees = "Empty";
         JOptionPane.showMessageDialog(null, employees, "CURRENT OBJECTS", JOptionPane.INFORMATION_MESSAGE);
     }
 
