@@ -12,18 +12,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
-    JButton _startButton, _stopButton, _timeButton;
+    JButton _startButton, _stopButton, _timeButton, _objectsButton;
     private SimTimer _timer;
     private JToggleButton _infoButton;
     private boolean _showTime, _showInfo;
-    private JPanel _startPanel, _stopPanel, _infoPanel, _timePanel;
+    private JPanel _startPanel, _stopPanel, _infoPanel, _timePanel, _objectsPanel;
     private Habitat _habitat;
 
     {
         _showTime = true;
         _showInfo = true;
 
-        setLayout(new GridLayout(2, 2));
+        setLayout(new GridLayout(3, 2));
 
         _startButton = new JButton("Start");
         _startButton.addActionListener(new ActionListener() {
@@ -97,10 +97,23 @@ public class ControlPanel extends JPanel {
         _timePanel.setLayout(new FlowLayout());
         _timePanel.add(_timeButton);
 
+        _objectsButton = new JButton("Current objects");
+        _objectsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                _habitat.showCurrentObjects();
+            }
+        });
+
+        _objectsPanel = new JPanel();
+        _objectsPanel.setLayout(new FlowLayout());
+        _objectsPanel.add(_objectsButton);
+
         add(_startPanel);
         add(_stopPanel);
         add(_infoPanel);
         add(_timePanel);
+        add(_objectsPanel);
 
     }
 

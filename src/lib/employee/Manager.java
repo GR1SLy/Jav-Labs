@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Color;
 
 import java.util.Random;
+import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 
@@ -37,11 +38,16 @@ public class Manager extends Employee {
         super();
     }
 
-    public Manager(final int maxX, final int maxY, final long time) {
+    public Manager(final int maxX, final int maxY, final long time, TreeSet<Integer> employeeID) {
         Random rnd = new Random();
         _x = rnd.nextInt(0, maxX - _imageSize);
         _y = rnd.nextInt(0, maxY - _imageSize);
         _birthTime = time;
+        _id = rnd.nextInt(1000, 10000);
+        while (employeeID.contains(_id)) {
+            _id = rnd.nextInt(1000, 10000);
+        }
+        employeeID.add(_id);
 
     }
 
@@ -66,7 +72,7 @@ public class Manager extends Employee {
 
     @Override
     public String toString() { 
-        return "Manager Generate time: " + $generateTime + " Generate percent: " + $generatePercent + " LifeTime: " + $lifeTime + " BirthTime: " + _birthTime; 
+        return "Manager: BirthTime: " + _birthTime + "; ID: " + _id;
     }
 
     @Override

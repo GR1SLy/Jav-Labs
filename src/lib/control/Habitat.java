@@ -9,19 +9,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import lib.employee.*;
 
 public class Habitat extends JFrame {
     private int _x, _y, _width, _height;
-    private ArrayList<Employee> _employeeArray;
+    private LinkedList<Employee> _employeeList;
+    private HashMap<Integer, Employee> _employeeBirthTime;
+    private TreeSet<Integer> _employeeID;
     private JPanel _cardPanel, _mainPanel, _workingPanel, _timerPanel, _graphicsPanel;
     private MenuPanel _menuPanel;
     private JButton _menuButton;
@@ -93,13 +99,13 @@ public class Habitat extends JFrame {
         _timerPanel.add(_timerLabel);
 
         _x = _y = 0;
-        _employeeArray = new ArrayList<Employee>();
+        _employeeList = new LinkedList<Employee>();
 
         _graphicsPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                for (Employee employee : _employeeArray) {
+                for (Employee employee : _employeeList) {
                     employee.draw(g);
                 }
             }
@@ -109,6 +115,7 @@ public class Habitat extends JFrame {
         _controlPanel = new ControlPanel();
         _workingPanel.add(_controlPanel, BorderLayout.PAGE_END);
 
+        _employeeID = new TreeSet<>();
     }
 
     /**
@@ -159,14 +166,14 @@ public class Habitat extends JFrame {
     }
 
     void moveEmployees() {
-        for (Employee employee : _employeeArray) {
+        for (Employee employee : _employeeList) {
             employee.move();
         }
     }
 
     void setTimer(final String timerSeconds) { _timerLabel.setText(timerSeconds); }
 
-    void clear() { _employeeArray.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
+    void clear() { _employeeList.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
 
     /**
      * Creates new employees
@@ -177,17 +184,17 @@ public class Habitat extends JFrame {
         
         if (new Developer().generate(time)) {
             Rectangle rect = _graphicsPanel.getBounds();
-            _employeeArray.add(new Developer(rect.width, rect.height, time));
+            _employeeList.addLast(new Developer(rect.width, rect.height, time, _employeeID));
             System.out.println("New Developer generated!\nCurrent count: " + Developer.getCount());
         }
         
         if (new Manager().generate(time)) {
             Rectangle rect = _graphicsPanel.getBounds();
-            _employeeArray.add(new Manager(rect.width, rect.height, time));
+            _employeeList.addLast(new Manager(rect.width, rect.height, time, _employeeID));
             System.out.println("New Manager generated!\nCurrent count: " + Manager.getCount());
         }
         
-        System.out.println("Current employees count: " + Employee.getCount());
+        System.out.println("Current employees count: " + Employee.getCount() + "\tIDs: " + _employeeID);
         
         _graphicsPanel.repaint();
     }
@@ -197,18 +204,23 @@ public class Habitat extends JFrame {
      * @param time - time from start of simulation
      */
     void terminateCheck(final long time) {
-        ArrayList<Employee> terminateArray = new ArrayList<Employee>();
-        for (Employee employee : _employeeArray) {
+        LinkedList<Employee> terminateArray = new LinkedList<Employee>();
+        for (Employee employee : _employeeList) {
             if (employee.terminate(time)) {
-                System.out.println("Terminating " + employee + " id: " + employee.hashCode());
+                System.out.println("Terminating " + employee);
                 terminateArray.add(employee);
             }
         }
         for (Employee employee : terminateArray) {
-            _employeeArray.remove(employee);
+            _employeeList.remove(employee);
+            _employeeID.remove(employee.getID());
         }
-        if (terminateArray.size() > 0) { System.out.println(_employeeArray + "\n--\n" + terminateArray); }
+        if (terminateArray.size() > 0) System.out.println("Terminating:\n" + terminateArray + "\nFrom:\n" + _employeeList);
         _graphicsPanel.repaint();
+    }
+
+    void showCurrentObjects() {
+        JOptionPane.showMessageDialog(null, "Objects", "CURRENT OBJECTS", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private int findUpdateTime(int devTime, int manTime) {
@@ -221,5 +233,4 @@ public class Habitat extends JFrame {
         for (int i = minTime; i > 0; --i) if (devTime % i == 0 && manTime % i == 0) return i;
         return -1;
     }
-    
 }

@@ -1,6 +1,7 @@
 package lib.employee;
 
 import java.util.Random;
+import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 
@@ -37,11 +38,17 @@ public class Developer extends Employee {
         super();
     }
 
-    public Developer(final int maxX, final int maxY, final long time) {
+    public Developer(final int maxX, final int maxY, final long time, TreeSet<Integer> employeeID) {
         Random rnd = new Random();
         _x = rnd.nextInt(0, maxX - _imageSize);
         _y = rnd.nextInt(0, maxY - _imageSize);
         _birthTime = time;
+        _id = rnd.nextInt(1000, 10000);
+        System.out.println(_id);
+        while (employeeID.contains(_id)) {
+            _id = rnd.nextInt(1000, 10000);
+        }
+        employeeID.add(_id);
     }
 
     @Override
@@ -67,7 +74,7 @@ public class Developer extends Employee {
 
     @Override
     public String toString() { 
-        return "Developer Generate time: " + $generateTime + " Generate chance: " + $generateChance + " LifeTime: " + $lifeTime + " BirthTime: " + _birthTime;
+        return "Developer: BirthTime: " + _birthTime + "; ID: " + _id;
     }
 
     @Override

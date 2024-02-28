@@ -43,7 +43,7 @@ public class MenuPanel extends JPanel {
                 } catch (NumberFormatException ec) {
                     System.out.println("INCORRECT Dev Time: " + s);
                     _getDevTime.setText("" + _generateDevTime);
-                    JOptionPane.showMessageDialog(null, "Invalid developer's generate time", "ERROR", 2);
+                    JOptionPane.showMessageDialog(null, "Invalid developer's generate time", "ERROR", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -58,7 +58,7 @@ public class MenuPanel extends JPanel {
                 } catch (NumberFormatException ec) {
                     System.out.println("INCORRECT Man Time " + s);
                     _getManTime.setText("" + _generateManTime);
-                    JOptionPane.showMessageDialog(null, "Invalid manager's time", "ERROR", 2);
+                    JOptionPane.showMessageDialog(null, "Invalid manager's time", "ERROR", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -73,7 +73,7 @@ public class MenuPanel extends JPanel {
                 } catch (NumberFormatException ec) {
                     System.out.println("INCORRECT Dev LifeTime: " + s);
                     _getDevTime.setText("" + _devLifeTime);
-                    JOptionPane.showMessageDialog(null, "Invalid developer's life time", "ERROR", 2);
+                    JOptionPane.showMessageDialog(null, "Invalid developer's life time", "ERROR", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -88,7 +88,7 @@ public class MenuPanel extends JPanel {
                 } catch (NumberFormatException ec) {
                     System.out.println("INCORRECT Man LifeTime: " + s);
                     _getDevTime.setText("" + _manLifeTime);
-                    JOptionPane.showMessageDialog(null, "Invalid manager's life time", "ERROR", 2);
+                    JOptionPane.showMessageDialog(null, "Invalid manager's life time", "ERROR", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
