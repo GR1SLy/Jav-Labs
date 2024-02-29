@@ -12,17 +12,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
-    JButton _startButton, _stopButton, _timeButton;
-    private JButton _stopDevAIButton, _stopManAIButton, _objectsButton;
+    JButton _startButton, _stopButton, _timeButton, _stopDevAIButton, _stopManAIButton, _objectsButton;
     private SimTimer _timer;
-    private JToggleButton _infoButton;
-    private boolean _showTime, _showInfo;
+    JToggleButton _infoButton;
+    private boolean _showTime, _showInfo, _devAI, _manAI;
     private JPanel _startPanel, _stopPanel, _stopDevAIPanel, _stopManAIPanel, _infoPanel, _timePanel, _objectsPanel;
     private Habitat _habitat;
 
     {
-        _showTime = true;
-        _showInfo = true;
+        _showTime = _showInfo = _devAI = _manAI = true;
 
         setLayout(new GridLayout(4, 2));
 
@@ -71,6 +69,8 @@ public class ControlPanel extends JPanel {
         _stopDevAIButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                _devAI = !_devAI;
+                if (_devAI) _stopDevAIButton.setText("Stop developer's AI"); else _stopDevAIButton.setText("Resume developer's AI");
             }
         });
         _stopDevAIButton.setFocusable(false);
@@ -83,6 +83,8 @@ public class ControlPanel extends JPanel {
         _stopManAIButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                _manAI = !_manAI;
+                if (_manAI) _stopManAIButton.setText("Stop manager's AI"); else _stopManAIButton.setText("Resume manager's AI");
             }
         });
         _stopManAIButton.setFocusable(false);
