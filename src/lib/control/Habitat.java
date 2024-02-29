@@ -248,8 +248,7 @@ public class Habitat extends JFrame {
             _employeeID.remove(employee.getID());
         }
 
-        if (terminateArray.size() > 0) System.out.println("Terminating:\n" + terminateArray + "\nFrom:\n" + _employeeList);
-        _graphicsPanel.repaint();
+        if (terminateArray.size() > 0) { System.out.println("Terminating:\n" + terminateArray + "\nFrom:\n" + _employeeList); _graphicsPanel.repaint(); }
     }
 
     void showCurrentObjects() {
