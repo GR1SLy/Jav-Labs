@@ -16,7 +16,7 @@ import java.awt.event.ActionListener;
 public class ControlPanel extends JPanel {
     JButton _startButton, _stopButton, _timeButton;
     SimTimer _timer;
-    private JToggleButton _infoButton;
+    JToggleButton _infoButton;
     private boolean _showTime, _showInfo;
     private JPanel _startPanel, _stopPanel, _infoPanel, _timePanel;
     private Habitat _habitat;
