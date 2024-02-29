@@ -181,7 +181,7 @@ public class Habitat extends JFrame {
 
     void setTimer(final String timerSeconds) { _timerLabel.setText(timerSeconds); }
 
-    void clear() { _employeeList.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
+    void clear() { _employeeBirthTime.clear(); _employeeID.clear(); _employeeList.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
 
     /**
      * Creates new employees
