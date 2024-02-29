@@ -147,13 +147,13 @@ public class Habitat extends JFrame {
                 } 
             }
         });
+        setVisible(true);
 
         _controlPanel.setHabitat(this);
         
         _menuBar = new MenuBar(this);
         setJMenuBar(_menuBar);
         
-        setVisible(true);
     }
 
     void moveEmployees() {
