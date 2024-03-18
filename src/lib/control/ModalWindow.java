@@ -36,6 +36,7 @@ public class ModalWindow extends JFrame {
         _labelArea.setForeground(Color.RED);
         _labelArea.setFont(new Font("Impact", Font.BOLD, 16));
         _labelArea.setFocusable(false);
+        _labelArea.setOpaque(false);
         _labelPanel.add(_labelArea);
         
         _infoPanel = new JPanel();
@@ -46,6 +47,7 @@ public class ModalWindow extends JFrame {
         _infoArea.setEditable(false);
         _infoArea.setFont(new Font("Lucida Console", Font.ITALIC, 14));
         _infoArea.setFocusable(false);
+        _infoArea.setOpaque(false);
         _infoPanel.add(_infoArea);
 
         _controlPanel = new JPanel();

@@ -1,6 +1,7 @@
 package lib.control;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -14,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 
 public class MenuPanel extends JPanel {
@@ -33,7 +35,7 @@ public class MenuPanel extends JPanel {
         _generateManPercent = 50;
         _manLifeTime = 10;
 
-        _getDevTime = new JTextField("2", 6);
+        _getDevTime = new JTextField("2", 10);
         _getDevTime.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String s = _getDevTime.getText();
@@ -47,8 +49,9 @@ public class MenuPanel extends JPanel {
                 }
             }
         });
+        _getDevTime.setHorizontalAlignment(JTextField.CENTER);
 
-        _getManTime = new JTextField("4", 6);
+        _getManTime = new JTextField("4", 10);
         _getManTime.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String s = _getManTime.getText();
@@ -62,8 +65,9 @@ public class MenuPanel extends JPanel {
                 }
             }
         });
+        _getManTime.setHorizontalAlignment(JTextField.CENTER);
 
-        _getDevLifeTime = new JTextField("10", 6);
+        _getDevLifeTime = new JTextField("10", 10);
         _getDevLifeTime.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String s = _getDevLifeTime.getText();
@@ -77,8 +81,9 @@ public class MenuPanel extends JPanel {
                 }
             }
         });
+        _getDevLifeTime.setHorizontalAlignment(JTextField.CENTER);
 
-        _getManLifeTime = new JTextField("10", 6);
+        _getManLifeTime = new JTextField("10", 10);
         _getManLifeTime.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String s = _getManLifeTime.getText();
@@ -92,6 +97,7 @@ public class MenuPanel extends JPanel {
                 }
             }
         });
+        _getManLifeTime.setHorizontalAlignment(JTextField.CENTER);
 
         _startButton = new JButton("Start");
         _startButton.setFocusable(false);
@@ -108,6 +114,8 @@ public class MenuPanel extends JPanel {
             }
         });
         _devChance.setSelectedItem(50);
+        _devChance.setPreferredSize(new Dimension(130, 30));
+        ((JLabel)_devChance.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         _manPercent = new JComboBox<Integer>();
         for (int i = 0; i <= 100; i += 10) {
@@ -121,6 +129,8 @@ public class MenuPanel extends JPanel {
             }
         });
         _manPercent.setSelectedItem(50);
+        _manPercent.setPreferredSize(new Dimension(130, 30));
+        ((JLabel)_manPercent.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         _welcomeLabel = new JLabel("Welcome");
         _welcomeLabel.setFont(new Font("Impact", Font.BOLD, 16));
@@ -132,19 +142,19 @@ public class MenuPanel extends JPanel {
         _centerPanel = new JPanel();
         _centerPanel.setLayout(new GridLayout(4, 2));
 
-        _devLabel = new JLabel("Developer:");
+        _devLabel = new JLabel("Developer:", SwingConstants.CENTER);
         _devLabel.setFont(new Font("Lucida Console", Font.ITALIC, 14));
 
         _devLabelPanel = new JPanel();
-        _devLabelPanel.setLayout(new FlowLayout());
-        _devLabelPanel.add(_devLabel);
+        _devLabelPanel.setLayout(new BorderLayout());
+        _devLabelPanel.add(_devLabel, BorderLayout.PAGE_END);
 
-        _manLabel = new JLabel("Manager:");
+        _manLabel = new JLabel("Manager:", SwingConstants.CENTER);
         _manLabel.setFont(new Font("Lucida Console", Font.ITALIC, 14));
 
         _manLabelPanel = new JPanel();
-        _manLabelPanel.setLayout(new FlowLayout());
-        _manLabelPanel.add(_manLabel);
+        _manLabelPanel.setLayout(new BorderLayout());
+        _manLabelPanel.add(_manLabel, BorderLayout.PAGE_END);
 
         _devTimePanel = new JPanel();
         _devTimePanel.setLayout(new FlowLayout());
