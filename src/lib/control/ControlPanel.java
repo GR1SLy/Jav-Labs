@@ -1,38 +1,32 @@
 package lib.control;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-import lib.employee.*;
-
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
     JButton _startButton, _stopButton, _timeButton, _stopDevAIButton, _stopManAIButton, _objectsButton;
-    private SimTimer _timer;
     JToggleButton _infoButton;
-    private boolean _showTime, _showInfo, _devAI, _manAI;
+    private boolean _showInfo;
+    boolean _devAI, _manAI;
     private JPanel _startPanel, _stopPanel, _stopDevAIPanel, _stopManAIPanel, _infoPanel, _timePanel, _objectsPanel;
     private Habitat _habitat;
 
     {
-        _showTime = _devAI = _manAI = true;
+        _devAI = _manAI = true;
         _showInfo = false;
 
         setLayout(new GridLayout(4, 2));
 
         _startButton = new JButton("Start");
-        _startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!_timer.isRunning()) {
-                    _timer.start();
-                }
-            }
+        _startButton.addActionListener(e -> {
+                _habitat.startSimulation();
+                _startButton.setEnabled(false);
+                _stopButton.setEnabled(true);
         });
         _startButton.setFocusable(false);
 
@@ -42,23 +36,12 @@ public class ControlPanel extends JPanel {
 
         _stopButton = new JButton("Stop");
         _stopButton.setEnabled(false);
-        _stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (_timer.isRunning()) {
-
-                    long totalTime = _timer.pause();
-
-                    int devCount = Developer.getCount(), manCount = Manager.getCount(), empCount = Employee.getCount();
-
-                    System.out.println("\n\n=================\nSimulation paused\n=================\n\nSimulation time: " + totalTime + 
-                    "\nCurrent statistics:\nDevelopers generated: " + devCount + 
-                    "\nManagers generated: " + manCount + "\nTotal Employees generated: " + empCount);
-                    ModalWindow modalWindow = new ModalWindow(_timer);
-                    if (_showInfo) modalWindow.showWindow(totalTime, devCount, manCount, empCount);
-                    else _timer.stop();
-                }
-            }
+        _stopButton.addActionListener(e -> {
+            _habitat.stopSimulation();
+            _startButton.setEnabled(true);
+                _stopButton.setEnabled(false);
+            if (_showInfo) showInfoPane();
+            else _habitat.clear();
         });
         _stopButton.setFocusable(false);
 
@@ -67,13 +50,10 @@ public class ControlPanel extends JPanel {
         _stopPanel.add(_stopButton);
 
         _stopDevAIButton = new JButton("Stop developer's AI");
-        _stopDevAIButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        _stopDevAIButton.addActionListener(e -> {
                 _devAI = !_devAI;
                 if (_devAI) _stopDevAIButton.setText("Stop developer's AI"); else _stopDevAIButton.setText("Resume developer's AI");
                 _habitat.changeDevAIStatus(_devAI);
-            }
         });
         _stopDevAIButton.setFocusable(false);
 
@@ -82,13 +62,10 @@ public class ControlPanel extends JPanel {
         _stopDevAIPanel.add(_stopDevAIButton);
 
         _stopManAIButton = new JButton("Stop manager's AI");
-        _stopManAIButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        _stopManAIButton.addActionListener(e -> {
                 _manAI = !_manAI;
                 if (_manAI) _stopManAIButton.setText("Stop manager's AI"); else _stopManAIButton.setText("Resume manager's AI");
                 _habitat.changeManAIStatus(_manAI);
-            }
         });
         _stopManAIButton.setFocusable(false);
 
@@ -97,12 +74,9 @@ public class ControlPanel extends JPanel {
         _stopManAIPanel.add(_stopManAIButton);
 
         _infoButton = new JToggleButton("Show Information");
-        _infoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        _infoButton.addActionListener(e -> {
                 _showInfo = !_showInfo;
                 System.out.println("Show info: " + _showInfo);
-            }
         });
         _infoButton.setFocusable(false);
         _infoButton.setSelected(!_showInfo);
@@ -112,15 +86,8 @@ public class ControlPanel extends JPanel {
         _infoPanel.add(_infoButton);
 
         _timeButton = new JButton("Hide Timer");
-        _timeButton.addActionListener(new ActionListener() {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                _showTime = !_showTime;
-                _habitat._timerLabel.setVisible(_showTime);
-                System.out.println("Show timer: " + _showTime);
-                if (_showTime) _timeButton.setLabel("Hide Timer"); else _timeButton.setLabel("Show Timer");
-            }
+        _timeButton.addActionListener(e -> {
+            if (_habitat.showTimer()) _timeButton.setText("Hide  Timer"); else _timeButton.setText("Show Timer");
         });
         _timeButton.setFocusable(false);
 
@@ -129,11 +96,8 @@ public class ControlPanel extends JPanel {
         _timePanel.add(_timeButton);
 
         _objectsButton = new JButton("Current objects");
-        _objectsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                _habitat.showCurrentObjects();
-            }
+        _objectsButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(_habitat, _habitat.getObjects(), "CURRENT OBJECTS", JOptionPane.INFORMATION_MESSAGE);
         });
         _objectsButton.setFocusable(false);
 
@@ -151,9 +115,17 @@ public class ControlPanel extends JPanel {
 
     }
 
-    void setHabitat(Habitat hbt) {
-        _timer = new SimTimer();
-        _timer.setHabitat(hbt);
-        _habitat = hbt;
+    public ControlPanel(Habitat habitat) {
+        super();
+        _habitat = habitat;
+    }
+
+    private void showInfoPane() {
+        int choose = JOptionPane.showConfirmDialog(_habitat, _habitat + "\nStop simulation?", "CANCELED", JOptionPane.YES_NO_OPTION);
+                System.out.println(choose);
+                switch(choose) {
+                    case 0 -> _habitat.clear();
+                    case 1 -> _startButton.doClick();
+                }
     }
 }

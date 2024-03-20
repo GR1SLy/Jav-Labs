@@ -1,22 +1,23 @@
 package lib.employee;
 
+import java.awt.Graphics;
+import java.awt.Image;
 import java.util.Random;
-import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Color;
-
 public class Developer extends Employee {
-    
-    private static int $generateTime = 0, $generateChance = 0, $count = 0, $lifeTime = 0;
 
-    private static Image _img = new ImageIcon("../lib/employee/images/developer.png").getImage();
+    private static int $generateTime = 2, $generateChance = 50, $count = 0, $lifeTime = 10, $moveTime = 3;
 
-    private static boolean _isImage = true;
-    private static int _imageSize = 50;
+    private int _maxX, _maxY, _dx = 1, _dy = 1;
+
+    private long _systemBirthTime = System.currentTimeMillis();
+
+    private static Random $rand = new Random();
+
+    private static Image $img = new ImageIcon("../lib/employee/images/developer.png").getImage();
+    private static int $imageSize = 50;
 
     public static void setGenerateTime(final int generateTime) { $generateTime = generateTime; }
 
@@ -26,7 +27,7 @@ public class Developer extends Employee {
 
     public static int getGenerateChance() { return $generateChance; }
 
-    public static void setLifeTime(final int lifeTime) { $lifeTime = lifeTime * 1000; }
+    public static void setLifeTime(final int lifeTime) { $lifeTime = lifeTime; }
 
     public static int getLifeTime() { return $lifeTime; }
 
@@ -34,64 +35,22 @@ public class Developer extends Employee {
 
     public static void clear() { $count = 0; }
 
-    private int maxX, maxY, dx = 1, dy = 1;
+    public static void decCount() { $count--; }
 
-    public Developer() {
+    public Developer(final int maxX, final int maxY, final int time, Integer id) {
         super();
-    }
-
-    public Developer(final int maxX, final int maxY, final long time, TreeSet<Integer> employeeID) {
-        Random rnd = new Random();
-        _x = rnd.nextInt(0, maxX - _imageSize);
-        _y = rnd.nextInt(0, maxY - _imageSize);
+        $rand = new Random();
+        _x = $rand.nextInt(0, maxX - $imageSize);
+        _y = $rand.nextInt(0, maxY - $imageSize);
         _birthTime = time;
-        _id = rnd.nextInt(1000, 10000);
-        System.out.println(_id);
-        while (employeeID.contains(_id)) {
-            _id = rnd.nextInt(1000, 10000);
-        }
-        employeeID.add(_id);
-
-        this.maxX = maxX;
-        this.maxY = maxY;
+        _id = id;
+        $count++;
+        _maxX = maxX;
+        _maxY = maxY;
+        newD();
     }
 
-    @Override
-    public boolean generate(final long time) {
-        if (time % $generateTime != 0) return false;
-        Random rnd = new Random();
-        int chance = rnd.nextInt(100) + 1;
-        System.out.println("Random: " + chance);
-        if (chance < $generateChance) { Employee.$count++; $count++; return true; }
-        else return false;
-    }
-
-    @Override
-    public boolean terminate(final long time) {
-        /* if (time - _birthTime >= $lifeTime) { $count--; Employee.$count--; return true; }
-        else return false; */
-        boolean result = false;
-        if (time - _birthTime >= $lifeTime) { $count--; Employee.$count--; result = true; }
-        else result = false;
-        if (result) System.out.println("Time: " + time + " BirthTime: " + _birthTime + " result: " + result);
-        return result;
-    }
-
-    @Override
-    public String toString() { 
-        return "Developer: BirthTime: " + _birthTime + "; ID: " + _id;
-    }
-
-    @Override
-    public void draw(Graphics g) {
-        if (_isImage) {
-            g.drawImage(_img, _x, _y, _imageSize, _imageSize, null);
-        } else {
-            g.setColor(Color.BLUE);
-            g.fillOval(_x, _y, 30, 30);
-        }
-    }
-
+    /* @Override
     public void move(boolean isRunning) {
         if (!isRunning) return;
         _x += dx;
@@ -103,6 +62,42 @@ public class Developer extends Employee {
         if (_y < 0 || _y + _imageSize > maxY) {
             dy *= -1;
         }
-        // System.out.println("Dev is moving");
+    } */
+
+    @Override
+    public void move(boolean isRunning) {
+        if (!isRunning) return;
+        _x += _dx;
+        _y += _dy;
+        if ((System.currentTimeMillis() - _systemBirthTime) / 1000 >= $moveTime) {
+            newD();
+            _systemBirthTime = System.currentTimeMillis();
+        } else {
+            if (_x < 0 || _x + $imageSize > _maxX) _dx *= -1;
+            if (_y < 0 || _y + $imageSize > _maxY) _dy *= -1;
+        }
+
     }
+
+    private void newD() {
+        int dx = $rand.nextInt(3) - 1;
+        int dy = $rand.nextInt(3) - 1;
+        while ((dx == 0 && dy == 0) || (dx == _dx && dy == _dy)) {
+            dx = $rand.nextInt(3) - 1;
+            dy = $rand.nextInt(3) - 1;
+        }
+        _dx = dx;
+        _dy = dy;
+    }
+
+    @Override
+    public String toString() {
+        return "Developer: BirthTime: " + _birthTime + "; ID: " + _id;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        g.drawImage($img, _x, _y, $imageSize, $imageSize, null);
+    }
+    
 }

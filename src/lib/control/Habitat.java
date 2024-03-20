@@ -5,21 +5,20 @@ import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import lib.ai.DevAI;
@@ -33,19 +32,26 @@ public class Habitat extends JFrame {
         public boolean isEmpty() { return emp1 == null && emp2 == null; }
     }
     private int _x, _y, _width, _height;
+
     private LinkedList<Employee> _employeeList;
-    private HashMap<Long, Pair> _employeeBirthTime;
+    private HashMap<Integer, Pair> _employeeBirthTime;
     private TreeSet<Integer> _employeeID;
-    private JPanel _cardPanel, _mainPanel, _workingPanel, _timerPanel, _graphicsPanel;
-    private MenuPanel _menuPanel;
-    private JButton _menuButton;
-    private MenuBar _menuBar;
-    private ManAI _manAI;
+
     private DevAI _devAI;
-    JButton _backToMenuButton;
+    private ManAI _manAI;
+    private boolean _devAIFlag = true, _manAIFlag = true;
+
+    private JPanel _cardPanel, _mainPanel, _workingPanel, _timerPanel, _graphicsPanel;
+    private JLabel _timerLabel;
+    private MenuPanel _menuPanel;
+    private JButton _backToMenuButton;
+    private MenuBar _menuBar;
     ControlPanel _controlPanel;
-    JLabel _timerLabel;
-    int _updateTime;
+
+    private Timer _timer;
+    private int _timerX = 1, _currentTime = 0;
+    private boolean _timerFlag = true;
+    private boolean _isRunning = false;
 
     {
         setTitle("SIMULATION");
@@ -55,52 +61,32 @@ public class Habitat extends JFrame {
         _cardPanel.setLayout(new CardLayout());
         add(_cardPanel, BorderLayout.CENTER);
 
-        _menuPanel = new MenuPanel();
+        _menuPanel = new MenuPanel(this);
         _cardPanel.add(_menuPanel);
 
-        _menuButton = _menuPanel.getStartButton();
-        _menuButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ((CardLayout)_cardPanel.getLayout()).next(_cardPanel);
-                Developer.setGenerateTime(_menuPanel._generateDevTime);
-                Developer.setGenerateChance(_menuPanel._generateDevChance);
-                Developer.setLifeTime(_menuPanel._devLifeTime);
-                Manager.setGenerateTime(_menuPanel._generateManTime);
-                Manager.setGeneratePercent(_menuPanel._generateManPercent);
-                Manager.setLifeTime(_menuPanel._manLifeTime);
-                _updateTime = findUpdateTime(_menuPanel._generateDevTime, _menuPanel._generateManTime) * 1000;
-
-                System.out.println("DevGenTime: " + Developer.getGenerateTime() + "\tManGenTime: " + Manager.getGenerateTime()
-                + "\nDevLifeTime: " + Developer.getLifeTime() + "\tManLifeTime: " + Manager.getLifeTime()
-                + "\nFrom menu:"
-                + "\nDevGenTime: " + _menuPanel._generateDevTime + "\tManGenTime: " + _menuPanel._generateManTime
-                + "\nDevLifeTime: " + _menuPanel._devLifeTime + "\tManLifeTime: " + _menuPanel._manLifeTime
-                + "\nGenerate Time: " + _updateTime);
-                
-                _controlPanel._startButton.doClick();
-                requestFocus();
-            }
-        });
-        
         _mainPanel = new JPanel();
         _mainPanel.setLayout(new BorderLayout());
         _cardPanel.add(_mainPanel);
 
+        //<---------Back To Menu Button--------->
         _backToMenuButton = new JButton("Back to menu");
-        _backToMenuButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ((CardLayout)_cardPanel.getLayout()).previous(_cardPanel);
-            } 
+        _backToMenuButton.addActionListener(e -> {
+            switchCard();
         });
         _backToMenuButton.setFocusable(false);
         _mainPanel.add(_backToMenuButton, BorderLayout.PAGE_END);
 
+        //<---------Working Panel--------->
         _workingPanel = new JPanel();
         _workingPanel.setLayout(new BorderLayout());
         _mainPanel.add(_workingPanel, BorderLayout.CENTER);
 
+        _controlPanel = new ControlPanel(this);
+        _workingPanel.add(_controlPanel, BorderLayout.PAGE_END);
+
+        _menuBar = new MenuBar(this);
+
+        //<---------Timer--------->
         _timerPanel = new JPanel();
         _timerPanel.setLayout(new FlowLayout());
         _timerPanel.setBorder(BorderFactory.createTitledBorder("TIMER"));
@@ -110,9 +96,7 @@ public class Habitat extends JFrame {
         _timerLabel.setVerticalAlignment(JLabel.TOP);
         _timerPanel.add(_timerLabel);
 
-        _x = _y = 0;
-        _employeeList = new LinkedList<Employee>();
-
+        //<---------Graphics Panel--------->
         _graphicsPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -124,172 +108,180 @@ public class Habitat extends JFrame {
         };
         _workingPanel.add(_graphicsPanel, BorderLayout.CENTER);
 
-        _controlPanel = new ControlPanel();
-        _workingPanel.add(_controlPanel, BorderLayout.PAGE_END);
-
+        //<---------Collections--------->
+        _employeeList = new LinkedList<>();
         _employeeID = new TreeSet<>();
         _employeeBirthTime = new HashMap<>();
 
+        //<---------AI--------->
         _devAI = new DevAI(_employeeList, _graphicsPanel);
         _manAI = new ManAI(_employeeList, _graphicsPanel);
-
     }
 
-    /**
-     * Default constructor
-     * @param width = 500
-     * @param height = 500
-     * @param x = @param y = 0
-     */
-    public Habitat() {
-        _width = 500;
-        _height = 500;
-    }
-
-    /**
-     * Habitat constructor with bounds
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     */
     public Habitat(int x, int y, int width, int height) {
+        super();
         _x = x;
         _y = y;
         _width = width;
         _height = height;
     }
 
-    /**
-     * Creates a new frame with start menu
-     */
     public void createFrame() {
         setBounds(_x, _y, _width, _height);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent event) {
-                char keyChar = event.getKeyChar();
-                System.out.println("Key pressed: " + keyChar);
-                switch (keyChar) {
-                    case 'B', 'b', 'И', 'и' -> _controlPanel._startButton.doClick();
-                    case 'E', 'e', 'У', 'у' -> _controlPanel._stopButton.doClick();
-                    case 'T', 't', 'Е', 'е' -> _controlPanel._timeButton.doClick();
-                } 
+            public void keyPressed(KeyEvent e) {
+                switch(e.getKeyCode()) {
+                    case KeyEvent.VK_B -> { if (!_isRunning) _controlPanel._startButton.doClick(); }
+                    case KeyEvent.VK_E -> { if (_isRunning) { _controlPanel._stopButton.doClick(); }}
+                    case KeyEvent.VK_T -> _controlPanel._timeButton.doClick();
+                }
+                System.out.println(e.getKeyChar());
             }
         });
         setVisible(true);
-
-        _controlPanel.setHabitat(this);
-        _menuBar = new MenuBar(this);
         setJMenuBar(_menuBar);
 
         _devAI.start();
-        _devAI.pauseAI();
         _manAI.start();
-        _manAI.pauseAI();
+        pauseAI();
     }
 
-    void resumeAI() { _devAI.resumeAI(); _manAI.resumeAI(); }
+    void switchCard() {
+        ((CardLayout)_cardPanel.getLayout()).next(_cardPanel);
+        requestFocus();
+    }
 
-    void pauseAI() { _devAI.pauseAI(); _manAI.pauseAI(); }
+    private void setTimerLabel() { _timerLabel.setText("Time: " + _currentTime); } 
 
-    void setTimer(final String timerSeconds) { _timerLabel.setText(timerSeconds); }
+    boolean showTimer() {
+        _timerLabel.setVisible(!_timerFlag);
+        _timerFlag = !_timerFlag;
+        return _timerFlag;
+    }
 
-    void clear() { _employeeBirthTime.clear(); _employeeID.clear(); _employeeList.clear(); Employee.clear(); Developer.clear(); Manager.clear(); }
+    void startSimulation() {
+        _isRunning = true;
+        _timer = new Timer();
+        resumeAI();
+        _timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                setTimerLabel();
+                _currentTime++;
+                update(_currentTime);
+            }
+        }, 0, 1000 / _timerX);
+        _backToMenuButton.setEnabled(false);
+    }
 
-    /**
-     * Creates new employees
-     * @param time - time from start of simulation
-     */
-    void update(final long time) {
-        System.out.println("Trying to generate employee:\nCurrent time: " + time);
-        Pair pair = new Pair();
-        
-        if (new Developer().generate(time)) {
-            Rectangle rect = _graphicsPanel.getBounds();
-            _employeeList.addLast(new Developer(rect.width, rect.height, time, _employeeID));
-            pair.emp1 = _employeeList.getLast();
-            System.out.println("New Developer generated!\nCurrent count: " + Developer.getCount());
-        }
-        
-        if (new Manager().generate(time)) {
-            Rectangle rect = _graphicsPanel.getBounds();
-            _employeeList.addLast(new Manager(rect.width, rect.height, time, _employeeID));
-            pair.emp2 = _employeeList.getLast();
-            System.out.println("New Manager generated!\nCurrent count: " + Manager.getCount());
-        }
+    void stopSimulation() {
+        _isRunning = false;
+        _timer.cancel();
+        pauseAI();
+        _timerLabel.setText("Simulation canceled");
+        _backToMenuButton.setEnabled(true);
+    }
 
-        if (!pair.isEmpty()) _employeeBirthTime.put(time, pair);
-        
-        System.out.println("Current employees count: " + Employee.getCount() + "\tIDs: " + _employeeID + "\n" + _employeeList);
-        
+    void clear() {
+        _employeeList.clear();
+        _employeeBirthTime.clear();
+        _employeeID.clear();
+        Developer.clear();
+        Manager.clear();
+        Employee.clear();
+        _currentTime = 0;
         _graphicsPanel.repaint();
     }
 
-    /**
-     * Terminates employees when lifetime is reached
-     * @param time - time from start of simulation
-     */
-    void terminateCheck(final long time) {
-        LinkedList<Employee> terminateArray = new LinkedList<Employee>();
-        for (Employee employee : _employeeList) {
-            if (employee.terminate(time)) {
-                System.out.println("Terminating " + employee);
-                terminateArray.add(employee);
-            }
-        }
-
-        long devTime = time - Developer.getLifeTime();
-        long manTime = time - Manager.getLifeTime();
-        if (_employeeBirthTime.containsKey(devTime)) {
-            if (terminateArray.contains(_employeeBirthTime.get(devTime).emp1)) {
-                Pair pair = _employeeBirthTime.get(devTime);
-                pair.emp1 = null;
-                if (pair.isEmpty()) _employeeBirthTime.remove(devTime);
-            }
-        }
-        if (_employeeBirthTime.containsKey(manTime)) {
-            if (terminateArray.contains(_employeeBirthTime.get(manTime).emp2)) {
-                Pair pair = _employeeBirthTime.get(manTime);
-                pair.emp2 = null;
-                if (pair.isEmpty()) _employeeBirthTime.remove(manTime);
-            }
-        }
-
-
-        for (Employee employee : terminateArray) {
-            _employeeList.remove(employee);
-            _employeeID.remove(employee.getID());
-        }
-
-        if (terminateArray.size() > 0) { System.out.println("Terminating:\n" + terminateArray + "\nFrom:\n" + _employeeList); _graphicsPanel.repaint(); }
+    public void setTimerAcceleration(int X) {
+        if (X > 0) _timerX = X;
     }
 
-    void showCurrentObjects() {
-        String employees = "";
+    private int findID(Random rand) {
+        Integer id = rand.nextInt(1000, 9999);
+        while (_employeeID.contains(id)) id = rand.nextInt(1000, 9999);
+        _employeeID.add(id);
+        return id;
+    }
+
+    String getObjects() {
+        String res = "Current objects:\n";
         Employee emp1, emp2;
-        for (Map.Entry<Long, Pair> entry : _employeeBirthTime.entrySet()) {
+        for (Map.Entry<Integer, Pair> entry : _employeeBirthTime.entrySet()) {
             emp1 = entry.getValue().emp1;
             emp2 = entry.getValue().emp2;
-            if (emp1 != null) employees += emp1 + "\n";
-            if (emp2 != null) employees += emp2 + "\n";
+            if (emp1 != null) res += emp1 + "\n";
+            if (emp2 != null) res += emp2 + "\n";
         }
-        if (employees == "") employees = "Empty";
-        JOptionPane.showMessageDialog(null, employees, "CURRENT OBJECTS", JOptionPane.INFORMATION_MESSAGE);
+        return res;
     }
 
-    void changeDevAIStatus(boolean status) { if (!status) _devAI.pauseAI(); else _devAI.resumeAI(); }
-
-    void changeManAIStatus(boolean status) { if (!status) _manAI.pauseAI(); else _manAI.resumeAI(); }
-
-    private int findUpdateTime(int devTime, int manTime) {
-        if(devTime == manTime) return devTime;
-
-        int minTime;
-        if (devTime < manTime) minTime = devTime;
-        else minTime = manTime;
-
-        for (int i = minTime; i > 0; --i) if (devTime % i == 0 && manTime % i == 0) return i;
-        return -1;
+    @Override
+    public String toString() {
+        return "Simulation statistics:" +
+        "\nDeveloper count: " + Developer.getCount() +
+        "\nManager count: " + Manager.getCount() + 
+        "\nTotal employee count: " + Employee.getCount();
     }
+
+    private void update(final int currentTime) {
+        generate();
+        terminate();
+        _graphicsPanel.repaint();
+    }
+
+    private void generate() {
+        Rectangle rect = _graphicsPanel.getBounds();
+        Random rand = new Random();
+        Pair pair = new Pair();
+        if (_currentTime % Developer.getGenerateTime() == 0) {
+            if (Developer.getGenerateChance() >= rand.nextInt(100)) {
+                Employee emp = new Developer(rect.width, rect.height, _currentTime, findID(rand));
+                pair.emp1 = emp;
+                _employeeList.addLast(emp);
+                System.out.println("Created new Developer!\tTotal count: " + Developer.getCount());
+            }
+        }
+        if (_currentTime % Manager.getGenerateTime() == 0) {
+            if ((double) Manager.getCount() / (double) Developer.getCount() * 100 < Manager.getGeneratePercent()) {
+                Employee emp = new Manager(rect.width, rect.height, _currentTime, findID(rand));
+                pair.emp2 = emp;
+                _employeeList.addLast(emp);
+                System.out.println("Created new Manager!\tTotal count: " + Manager.getCount());
+            }
+        }
+        if (!pair.isEmpty()) _employeeBirthTime.put(_currentTime, pair);
+    }
+
+    private void terminate() {
+        if (_employeeBirthTime.containsKey(_currentTime - Developer.getLifeTime()) && _employeeBirthTime.get(_currentTime - Developer.getLifeTime()).emp1 != null) {
+            Employee emp1 = _employeeBirthTime.get(_currentTime - Developer.getLifeTime()).emp1;
+            _employeeID.remove(emp1.getID());
+            _employeeList.remove(emp1);
+            _employeeBirthTime.get(_currentTime - Developer.getLifeTime()).emp1 = null;
+            Developer.decCount();
+            if (_employeeBirthTime.get(_currentTime - Developer.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Developer.getLifeTime());
+        }
+        if (_employeeBirthTime.containsKey(_currentTime - Manager.getLifeTime()) && _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 != null) {
+            Employee emp2 = _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2;
+            _employeeID.remove(emp2.getID());
+            _employeeList.remove(emp2);
+            _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 = null;
+            Manager.decCount();
+            if (_employeeBirthTime.get(_currentTime - Manager.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Manager.getLifeTime());
+        }
+    }
+
+    private void resumeAI() { 
+        if (_devAIFlag) _devAI.resumeAI(); 
+        if (_manAIFlag) _manAI.resumeAI(); 
+    }
+
+    private void pauseAI() { _devAI.pauseAI(); _manAI.pauseAI(); }
+
+    void changeDevAIStatus(boolean status) { if (!status) _devAI.pauseAI(); else _devAI.resumeAI(); _devAIFlag = status; }
+
+    void changeManAIStatus(boolean status) { if (!status) _manAI.pauseAI(); else _manAI.resumeAI(); _manAIFlag = status; }
 }

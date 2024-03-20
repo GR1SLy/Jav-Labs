@@ -1,14 +1,12 @@
 package lib.employee;
 
-import lib.control.IBehaviour;
-
 import java.awt.Graphics;
 
 public abstract class Employee implements IBehaviour{
     
     protected int _x, _y, _id;
 
-    protected long _birthTime;
+    protected int _birthTime;
 
     static int $count = 0;
 
@@ -16,6 +14,7 @@ public abstract class Employee implements IBehaviour{
         _x = _y = 0;
         _birthTime = 0;
         _id = 0;
+        $count++;
     }
 
     public static int getCount() { return $count; }
@@ -23,10 +22,6 @@ public abstract class Employee implements IBehaviour{
     public static void clear() { $count = 0; }
 
     public int getID() { return _id; }
-
-    public abstract boolean generate(final long time);
-
-    public abstract boolean terminate(final long time);
     
     public abstract String toString();
 
