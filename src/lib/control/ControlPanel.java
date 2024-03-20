@@ -20,7 +20,8 @@ public class ControlPanel extends JPanel {
     private Habitat _habitat;
 
     {
-        _showTime = _showInfo = _devAI = _manAI = true;
+        _showTime = _devAI = _manAI = true;
+        _showInfo = false;
 
         setLayout(new GridLayout(4, 2));
 
@@ -71,6 +72,7 @@ public class ControlPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 _devAI = !_devAI;
                 if (_devAI) _stopDevAIButton.setText("Stop developer's AI"); else _stopDevAIButton.setText("Resume developer's AI");
+                _habitat.changeDevAIStatus(_devAI);
             }
         });
         _stopDevAIButton.setFocusable(false);
@@ -85,6 +87,7 @@ public class ControlPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 _manAI = !_manAI;
                 if (_manAI) _stopManAIButton.setText("Stop manager's AI"); else _stopManAIButton.setText("Resume manager's AI");
+                _habitat.changeManAIStatus(_manAI);
             }
         });
         _stopManAIButton.setFocusable(false);
@@ -102,6 +105,7 @@ public class ControlPanel extends JPanel {
             }
         });
         _infoButton.setFocusable(false);
+        _infoButton.setSelected(!_showInfo);
 
         _infoPanel = new JPanel();
         _infoPanel.setLayout(new FlowLayout());

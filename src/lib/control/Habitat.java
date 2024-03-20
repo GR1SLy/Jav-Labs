@@ -22,6 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import lib.ai.DevAI;
+import lib.ai.ManAI;
 import lib.employee.*;
 
 public class Habitat extends JFrame {
@@ -38,6 +40,8 @@ public class Habitat extends JFrame {
     private MenuPanel _menuPanel;
     private JButton _menuButton;
     private MenuBar _menuBar;
+    private ManAI _manAI;
+    private DevAI _devAI;
     JButton _backToMenuButton;
     ControlPanel _controlPanel;
     JLabel _timerLabel;
@@ -125,6 +129,10 @@ public class Habitat extends JFrame {
 
         _employeeID = new TreeSet<>();
         _employeeBirthTime = new HashMap<>();
+
+        _devAI = new DevAI(_employeeList, _graphicsPanel);
+        _manAI = new ManAI(_employeeList, _graphicsPanel);
+
     }
 
     /**
@@ -174,13 +182,16 @@ public class Habitat extends JFrame {
         _controlPanel.setHabitat(this);
         _menuBar = new MenuBar(this);
         setJMenuBar(_menuBar);
+
+        _devAI.start();
+        _devAI.pauseAI();
+        _manAI.start();
+        _manAI.pauseAI();
     }
 
-    void moveEmployees() {
-        for (Employee employee : _employeeList) {
-            employee.move();
-        }
-    }
+    void resumeAI() { _devAI.resumeAI(); _manAI.resumeAI(); }
+
+    void pauseAI() { _devAI.pauseAI(); _manAI.pauseAI(); }
 
     void setTimer(final String timerSeconds) { _timerLabel.setText(timerSeconds); }
 
@@ -210,7 +221,7 @@ public class Habitat extends JFrame {
 
         if (!pair.isEmpty()) _employeeBirthTime.put(time, pair);
         
-        System.out.println("Current employees count: " + Employee.getCount() + "\tIDs: " + _employeeID);
+        System.out.println("Current employees count: " + Employee.getCount() + "\tIDs: " + _employeeID + "\n" + _employeeList);
         
         _graphicsPanel.repaint();
     }
@@ -266,6 +277,10 @@ public class Habitat extends JFrame {
         if (employees == "") employees = "Empty";
         JOptionPane.showMessageDialog(null, employees, "CURRENT OBJECTS", JOptionPane.INFORMATION_MESSAGE);
     }
+
+    void changeDevAIStatus(boolean status) { if (!status) _devAI.pauseAI(); else _devAI.resumeAI(); }
+
+    void changeManAIStatus(boolean status) { if (!status) _manAI.pauseAI(); else _manAI.resumeAI(); }
 
     private int findUpdateTime(int devTime, int manTime) {
         if(devTime == manTime) return devTime;

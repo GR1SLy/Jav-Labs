@@ -34,6 +34,8 @@ public class Developer extends Employee {
 
     public static void clear() { $count = 0; }
 
+    private int maxX, maxY, dx = 1, dy = 1;
+
     public Developer() {
         super();
     }
@@ -49,6 +51,9 @@ public class Developer extends Employee {
             _id = rnd.nextInt(1000, 10000);
         }
         employeeID.add(_id);
+
+        this.maxX = maxX;
+        this.maxY = maxY;
     }
 
     @Override
@@ -87,5 +92,17 @@ public class Developer extends Employee {
         }
     }
 
-    public void move() {}
+    public void move(boolean isRunning) {
+        if (!isRunning) return;
+        _x += dx;
+        _y += dy;
+
+        if (_x < 0 || _x + _imageSize > maxX) {
+            dx *= -1;
+        }
+        if (_y < 0 || _y + _imageSize > maxY) {
+            dy *= -1;
+        }
+        // System.out.println("Dev is moving");
+    }
 }

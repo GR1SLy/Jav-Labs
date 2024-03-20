@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 class SimTimer {
     private Timer _timer;
+    private int _timerX = 10;
     private long _currentTime, _totalTime;
     private String _timerSeconds;
     private Habitat _habitat;
@@ -22,11 +23,13 @@ class SimTimer {
 
     void setHabitat(final Habitat hbt) { _habitat = hbt; }
 
-    
+    void setTimerX(int X) { _timerX = X; }
+
     void start() {
         _habitat._controlPanel._startButton.setEnabled(false);
         _habitat._controlPanel._stopButton.setEnabled(true);
         _habitat._backToMenuButton.setEnabled(false);
+        _habitat.resumeAI();
         _timer = new Timer();
         _isRunning = true;
         System.out.println("\nSimulation has been started");
@@ -42,16 +45,16 @@ class SimTimer {
                 else _timerSeconds = "Time: 0 seconds";
                 _habitat.setTimer(_timerSeconds);
                 _currentTime += 1000;
-                _habitat.moveEmployees();
                 _habitat.terminateCheck(_currentTime);
             }
-        }, 0, 1000);
+        }, 0, 1000 / _timerX);
     }
     
     void stop() {
         _habitat._controlPanel._startButton.setEnabled(true);
         _habitat._controlPanel._stopButton.setEnabled(false);
         _habitat._backToMenuButton.setEnabled(true);
+        _habitat.pauseAI();
         _isRunning = false;
         if (!_isPaused) _timer.cancel();
         _totalTime = _currentTime;
@@ -63,6 +66,7 @@ class SimTimer {
 
     long pause() {
         System.out.println("\nSimulation paused\n");
+        _habitat.pauseAI();
         _timer.cancel();
         _isPaused = true;
         return _currentTime;
@@ -70,6 +74,7 @@ class SimTimer {
 
     void resume() {
         System.out.println("\nSimulation resumed\n");
+        _habitat.resumeAI();
         _timer = new Timer();
         _timer.schedule(new TimerTask() {
             public void run() {
@@ -83,9 +88,8 @@ class SimTimer {
                 else _timerSeconds = "Time: 0 seconds";
                 _habitat.setTimer(_timerSeconds);
                 _currentTime += 1000;
-                _habitat.moveEmployees();
             }
-        }, 0, 1000);
+        }, 0, 1000 / _timerX);
         _isPaused = false;
     }
 
