@@ -1,6 +1,7 @@
 package lib.control;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -11,9 +12,12 @@ import java.awt.GridLayout;
 public class ControlPanel extends JPanel {
     JButton _startButton, _stopButton, _timeButton, _stopDevAIButton, _stopManAIButton, _objectsButton;
     JToggleButton _infoButton;
+    private JComboBox<String> _priorityAI;
     private boolean _showInfo;
     boolean _devAI, _manAI;
-    private JPanel _startPanel, _stopPanel, _stopDevAIPanel, _stopManAIPanel, _infoPanel, _timePanel, _objectsPanel;
+    private JPanel _startPanel, _stopPanel, _stopDevAIPanel, 
+                   _stopManAIPanel, _infoPanel, _timePanel, 
+                   _objectsPanel, _priorityPanel;
     private Habitat _habitat;
 
     {
@@ -105,6 +109,18 @@ public class ControlPanel extends JPanel {
         _objectsPanel.setLayout(new FlowLayout());
         _objectsPanel.add(_objectsButton);
 
+        _priorityAI = new JComboBox<>();
+        _priorityAI.addItem("Dev is a priority");
+        _priorityAI.addItem("Man is a priority");
+        _priorityAI.addActionListener(e -> {
+            _habitat.setAIPriority(_priorityAI.getSelectedIndex());
+        });
+        _priorityAI.setFocusable(false);
+
+        _priorityPanel = new JPanel();
+        _priorityPanel.setLayout(new FlowLayout());
+        _priorityPanel.add(_priorityAI);
+
         add(_startPanel);
         add(_stopPanel);
         add(_stopDevAIPanel);
@@ -112,6 +128,7 @@ public class ControlPanel extends JPanel {
         add(_infoPanel);
         add(_timePanel);
         add(_objectsPanel);
+        add(_priorityPanel);
 
     }
 

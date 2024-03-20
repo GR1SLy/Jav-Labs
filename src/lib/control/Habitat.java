@@ -285,4 +285,9 @@ public class Habitat extends JFrame {
     void changeDevAIStatus(boolean status) { if (!status) _devAI.pauseAI(); else _devAI.resumeAI(); _devAIFlag = status; }
 
     void changeManAIStatus(boolean status) { if (!status) _manAI.pauseAI(); else _manAI.resumeAI(); _manAIFlag = status; }
+
+    void setAIPriority(int priority) { 
+        if (priority == 0) { _devAI.setPriority(Thread.MAX_PRIORITY); _manAI.setPriority(Thread.MIN_PRIORITY); } 
+        else if (priority == 1) { _manAI.setPriority(Thread.MAX_PRIORITY); _devAI.setPriority(Thread.MIN_PRIORITY); }
+    }
 }
