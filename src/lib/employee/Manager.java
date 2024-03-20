@@ -40,8 +40,8 @@ public class Manager extends Employee {
     public Manager(final int maxX, final int maxY, final int time, Integer id) {
         super();
         _rand = new Random();
-        _centerX = _x = _rand.nextInt(0, maxX - _imageSize - (_radius * 2));
-        _centerY = _y = _rand.nextInt(0, maxY - _imageSize - (_radius * 2));
+        _centerX = _x = _rand.nextInt(_radius, maxX - _imageSize - _radius);
+        _centerY = _y = _rand.nextInt(_radius, maxY - _imageSize - _radius);
         _birthTime = time;
         _id = id;
         $count++;

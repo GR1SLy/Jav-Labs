@@ -128,6 +128,7 @@ public class Habitat extends JFrame {
 
     public void createFrame() {
         setBounds(_x, _y, _width, _height);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addKeyListener(new KeyAdapter() {
             @Override
