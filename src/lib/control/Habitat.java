@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import lib.ai.BaseAI;
 import lib.ai.DevAI;
 import lib.ai.ManAI;
 import lib.employee.*;
@@ -290,4 +291,8 @@ public class Habitat extends JFrame {
         if (priority == 0) { _devAI.setPriority(Thread.MAX_PRIORITY); _manAI.setPriority(Thread.MIN_PRIORITY); } 
         else if (priority == 1) { _manAI.setPriority(Thread.MAX_PRIORITY); _devAI.setPriority(Thread.MIN_PRIORITY); }
     }
+
+    public void setAIV(int velocity) { BaseAI.setV(velocity); }
+
+    public void setAIN(int N) { Developer.setN(N); }
 }

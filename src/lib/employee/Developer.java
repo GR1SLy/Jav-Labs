@@ -19,6 +19,8 @@ public class Developer extends Employee {
     private static Image $img = new ImageIcon("../lib/employee/images/developer.png").getImage();
     private static int $imageSize = 50;
 
+    public static void setN(int N) { $moveTime = N; }
+
     public static void setGenerateTime(final int generateTime) { $generateTime = generateTime; }
 
     public static int getGenerateTime() { return $generateTime; }
