@@ -14,7 +14,7 @@ public class ControlPanel extends JPanel {
     JToggleButton _infoButton;
     private JComboBox<String> _priorityAI;
     private boolean _showInfo;
-    boolean _devAI, _manAI;
+    private boolean _devAI, _manAI;
     private JPanel _startPanel, _stopPanel, _stopDevAIPanel, 
                    _stopManAIPanel, _infoPanel, _timePanel, 
                    _objectsPanel, _priorityPanel;

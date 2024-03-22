@@ -21,6 +21,8 @@ public abstract class Employee implements IBehaviour{
 
     public static void clear() { $count = 0; }
 
+    public static void decCount() { $count--; }
+
     public int getID() { return _id; }
     
     public abstract String toString();

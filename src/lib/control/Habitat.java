@@ -73,6 +73,7 @@ public class Habitat extends JFrame {
         _backToMenuButton = new JButton("Back to menu");
         _backToMenuButton.addActionListener(e -> {
             switchCard();
+            _menuPanel.requestFocus();
         });
         _backToMenuButton.setFocusable(false);
         _mainPanel.add(_backToMenuButton, BorderLayout.PAGE_END);
@@ -264,6 +265,7 @@ public class Habitat extends JFrame {
             _employeeList.remove(emp1);
             _employeeBirthTime.get(_currentTime - Developer.getLifeTime()).emp1 = null;
             Developer.decCount();
+            Employee.decCount();
             if (_employeeBirthTime.get(_currentTime - Developer.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Developer.getLifeTime());
         }
         if (_employeeBirthTime.containsKey(_currentTime - Manager.getLifeTime()) && _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 != null) {
@@ -272,6 +274,7 @@ public class Habitat extends JFrame {
             _employeeList.remove(emp2);
             _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 = null;
             Manager.decCount();
+            Employee.decCount();
             if (_employeeBirthTime.get(_currentTime - Manager.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Manager.getLifeTime());
         }
     }

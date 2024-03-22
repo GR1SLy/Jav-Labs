@@ -41,30 +41,15 @@ public class Developer extends Employee {
 
     public Developer(final int maxX, final int maxY, final int time, Integer id) {
         super();
-        $rand = new Random();
         _x = $rand.nextInt(0, maxX - $imageSize);
         _y = $rand.nextInt(0, maxY - $imageSize);
         _birthTime = time;
         _id = id;
-        $count++;
         _maxX = maxX;
         _maxY = maxY;
         newD();
+        $count++;
     }
-
-    /* @Override
-    public void move(boolean isRunning) {
-        if (!isRunning) return;
-        _x += dx;
-        _y += dy;
-
-        if (_x < 0 || _x + _imageSize > maxX) {
-            dx *= -1;
-        }
-        if (_y < 0 || _y + _imageSize > maxY) {
-            dy *= -1;
-        }
-    } */
 
     @Override
     public void move(boolean isRunning) {

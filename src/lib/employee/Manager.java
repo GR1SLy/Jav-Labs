@@ -10,14 +10,14 @@ public class Manager extends Employee {
 
     private static int $generateTime = 4, $generatePercent = 50, $count = 0, $lifeTime = 10;
 
-    private double angle = 0.0;
+    private double _angle = 0.0;
 
     private int _centerX, _centerY, _radius = 100;
 
-    private static Random _rand = new Random();
+    private static Random $rand = new Random();
 
-    private static Image _img = new ImageIcon("../lib/employee/images/manager.png").getImage();
-    private static int _imageSize = 50;
+    private static Image $img = new ImageIcon("../lib/employee/images/manager.png").getImage();
+    private static int $imageSize = 50;
 
     public static void setGenerateTime(final int generateTime) { $generateTime = generateTime; }
 
@@ -39,9 +39,9 @@ public class Manager extends Employee {
 
     public Manager(final int maxX, final int maxY, final int time, Integer id) {
         super();
-        _rand = new Random();
-        _centerX = _x = _rand.nextInt(_radius, maxX - _imageSize - _radius);
-        _centerY = _y = _rand.nextInt(_radius, maxY - _imageSize - _radius);
+        while ((maxX - $imageSize - _radius) < _radius || (maxY - $imageSize - _radius) < _radius) _radius /= 2;
+        _centerX = _x = $rand.nextInt(_radius, maxX - $imageSize - _radius);
+        _centerY = _y = $rand.nextInt(_radius, maxY - $imageSize - _radius);
         _birthTime = time;
         _id = id;
         $count++;
@@ -50,10 +50,10 @@ public class Manager extends Employee {
     @Override
     public void move(boolean isRunning) {
         if (!isRunning) return;
-        angle += 5 / (double)_radius;
-        angle %= 2 * Math.PI;
-        _x = _centerX + (int)(_radius * Math.cos(angle));
-        _y = _centerY + (int)(_radius * Math.sin(angle));
+        _angle += 5 / (double)_radius;
+        _angle %= 2 * Math.PI;
+        _x = _centerX + (int)(_radius * Math.cos(_angle));
+        _y = _centerY + (int)(_radius * Math.sin(_angle));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class Manager extends Employee {
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(_img, _x, _y, _imageSize, _imageSize, null);
+        g.drawImage($img, _x, _y, $imageSize, $imageSize, null);
     }
     
 }
