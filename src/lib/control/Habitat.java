@@ -28,7 +28,8 @@ import lib.employee.*;
 
 public class Habitat extends JFrame {
     private class Pair {
-        public Employee emp1, emp2;
+        public Employee emp1;
+        public LinkedList<Employee> emp2;
         public Pair() { emp1 = null; emp2 = null; }
         public boolean isEmpty() { return emp1 == null && emp2 == null; }
     }
@@ -211,7 +212,8 @@ public class Habitat extends JFrame {
 
     String getObjects() {
         String res = "Current objects:\n";
-        Employee emp1, emp2;
+        Employee emp1;
+        LinkedList<Employee> emp2;
         for (Map.Entry<Integer, Pair> entry : _employeeBirthTime.entrySet()) {
             emp1 = entry.getValue().emp1;
             emp2 = entry.getValue().emp2;
@@ -249,8 +251,10 @@ public class Habitat extends JFrame {
         }
         if (_currentTime % Manager.getGenerateTime() == 0) {
             if ((double) Manager.getCount() / (double) Developer.getCount() * 100 < Manager.getGeneratePercent()) {
+                LinkedList<Employee> emp2 = new LinkedList<>();
                 Employee emp = new Manager(rect.width, rect.height, _currentTime, findID(rand));
-                pair.emp2 = emp;
+                emp2.add(emp);
+                pair.emp2 = emp2;
                 _employeeList.addLast(emp);
                 System.out.println("Created new Manager!\tTotal count: " + Manager.getCount());
             }
@@ -269,9 +273,11 @@ public class Habitat extends JFrame {
             if (_employeeBirthTime.get(_currentTime - Developer.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Developer.getLifeTime());
         }
         if (_employeeBirthTime.containsKey(_currentTime - Manager.getLifeTime()) && _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 != null) {
-            Employee emp2 = _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2;
-            _employeeID.remove(emp2.getID());
-            _employeeList.remove(emp2);
+            LinkedList<Employee> emp = _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2;
+            for (Employee emp2 : emp) {
+                _employeeID.remove(emp2.getID());
+                _employeeList.remove(emp2);
+            }
             _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 = null;
             Manager.decCount();
             Employee.decCount();
@@ -298,4 +304,42 @@ public class Habitat extends JFrame {
     public void setAIV(int velocity) { BaseAI.setV(velocity); }
 
     public void setAIN(int N) { Developer.setN(N); }
+
+    void fireManagers() {
+        LinkedList<Employee> deathNote = new LinkedList<>();
+        for (Employee emp : _employeeList) {
+            if (emp instanceof Manager) {
+                deathNote.add(emp);
+            }
+        }
+        for (Employee emp : deathNote) {
+            _employeeID.remove(emp.getID());
+            _employeeList.remove(emp);
+            if (_employeeBirthTime.containsKey(emp.getBirthTime())) {
+                _employeeBirthTime.get(emp.getBirthTime()).emp2 = null;
+            }
+        }
+        System.out.println("!!Managers have fired!!");
+    }
+
+    void hireManagers(int n) {
+        LinkedList<Employee> newManagers = new LinkedList<>();
+        Rectangle rect = _graphicsPanel.getBounds();
+        Random rand = new Random();
+        for (int i = 0; i < n; ++i) {
+            newManagers.addLast(new Manager(rect.width, rect.height, _currentTime, findID(rand)));
+        }
+        for (Employee emp : newManagers) {
+            _employeeList.addLast(emp);
+            _employeeID.add(emp.getID());
+            if (_employeeBirthTime.containsKey(_currentTime)) {
+                _employeeBirthTime.get(_currentTime).emp2 = newManagers;
+            } else {
+                Pair pair = new Pair();
+                pair.emp2 = newManagers;
+                _employeeBirthTime.put(_currentTime, pair);
+            }
+        }
+        System.out.println("!!Created " + n + " new managers!!");
+    }
 }

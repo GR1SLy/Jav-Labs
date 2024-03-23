@@ -8,7 +8,7 @@ public abstract class Employee implements IBehaviour{
 
     protected int _birthTime;
 
-    static int $count = 0;
+    private static int $count = 0;
 
     public Employee() {
         _x = _y = 0;
@@ -24,6 +24,8 @@ public abstract class Employee implements IBehaviour{
     public static void decCount() { $count--; }
 
     public int getID() { return _id; }
+
+    public int getBirthTime() { return _birthTime; }
     
     public abstract String toString();
 
