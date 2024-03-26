@@ -45,15 +45,15 @@ public class MenuPanel extends JPanel {
             } catch (Exception ex) {
                 System.out.println("ERROR: Incorrect data");
                 JOptionPane.showMessageDialog(MenuPanel.this, "Invalid time data", "ERROR", JOptionPane.ERROR_MESSAGE);
-                _getDevTime.setText("2");
-                _getDevLifeTime.setText("10");
-                _getManTime.setText("4");
-                _getManLifeTime.setText("10");
+                _getDevTime.setText("" + Developer.getGenerateTime());
+                _getDevLifeTime.setText("" + Developer.getLifeTime());
+                _getManTime.setText("" + Manager.getGenerateTime());
+                _getManLifeTime.setText("" + Manager.getLifeTime());
             }
         });
 
         //<---------Text Areas--------->
-        _getDevTime = new JTextField("2", 10);
+        _getDevTime = new JTextField("" + Developer.getGenerateTime(), 10);
         _getDevTime.setHorizontalAlignment(JTextField.CENTER);
 
         _devTimePanel = new JPanel();
@@ -62,7 +62,7 @@ public class MenuPanel extends JPanel {
         _devTimePanel.setBorder(BorderFactory.createTitledBorder("Time:"));
 
 
-        _getManTime = new JTextField("4", 10);
+        _getManTime = new JTextField("" + Manager.getGenerateTime(), 10);
         _getManTime.setHorizontalAlignment(JTextField.CENTER);
 
         _manTimePanel = new JPanel();
@@ -71,7 +71,7 @@ public class MenuPanel extends JPanel {
         _manTimePanel.setBorder(BorderFactory.createTitledBorder("Time:"));
 
 
-        _getDevLifeTime = new JTextField("10", 10);
+        _getDevLifeTime = new JTextField("" + Developer.getLifeTime(), 10);
         _getDevLifeTime.setHorizontalAlignment(JTextField.CENTER);
 
         _devLifeTimePanel = new JPanel();
@@ -80,7 +80,7 @@ public class MenuPanel extends JPanel {
         _devLifeTimePanel.setBorder(BorderFactory.createTitledBorder("Life Time:"));
 
 
-        _getManLifeTime = new JTextField("10", 10);
+        _getManLifeTime = new JTextField("" + Manager.getLifeTime(), 10);
         _getManLifeTime.setHorizontalAlignment(JTextField.CENTER);
 
         _manLifeTimePanel = new JPanel();
@@ -93,7 +93,7 @@ public class MenuPanel extends JPanel {
         for (int i = 0; i <= 100; i += 10) {
             _devChance.addItem(i);
         }
-        _devChance.setSelectedItem(50);
+        _devChance.setSelectedItem(Developer.getGenerateChance());
         _devChance.setPreferredSize(new Dimension(130, 30));
         ((JLabel)_devChance.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
         _devChancePanel = new JPanel();
@@ -106,7 +106,7 @@ public class MenuPanel extends JPanel {
         for (int i = 0; i <= 100; i += 10) {
             _manPercent.addItem(i);
         }
-        _manPercent.setSelectedItem(50);
+        _manPercent.setSelectedItem(Manager.getGeneratePercent());
         _manPercent.setPreferredSize(new Dimension(130, 30));
         ((JLabel)_manPercent.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 

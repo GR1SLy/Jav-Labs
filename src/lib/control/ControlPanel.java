@@ -89,7 +89,7 @@ public class ControlPanel extends JPanel {
         _infoPanel.setLayout(new FlowLayout());
         _infoPanel.add(_infoButton);
 
-        _timeButton = new JButton("Hide Timer");
+        _timeButton = new JButton("Hide  Timer");
         _timeButton.addActionListener(e -> {
             if (_habitat.showTimer()) _timeButton.setText("Hide  Timer"); else _timeButton.setText("Show Timer");
         });
@@ -145,4 +145,11 @@ public class ControlPanel extends JPanel {
                     case 1 -> _startButton.doClick();
                 }
     }
+
+    void setInfoFlag(boolean showInfo) {
+        _showInfo = showInfo;
+        if (_showInfo) _infoButton.doClick();
+    }
+
+    boolean getInfoFlag() { return _showInfo; }
 }

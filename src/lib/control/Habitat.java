@@ -56,6 +56,11 @@ public class Habitat extends JFrame {
     private boolean _isRunning = false;
 
     {
+        ConfigOperator co = new ConfigOperator();
+        ConfigOperator.boolPair pair = co.readConfig();
+        _timerFlag = pair.showTimer;
+        
+        
         setTitle("SIMULATION");
         setLayout(new BorderLayout());
 
@@ -85,6 +90,7 @@ public class Habitat extends JFrame {
         _mainPanel.add(_workingPanel, BorderLayout.CENTER);
 
         _controlPanel = new ControlPanel(this);
+        _controlPanel.setInfoFlag(pair.showInfo);
         _workingPanel.add(_controlPanel, BorderLayout.PAGE_END);
 
         _menuBar = new MenuBar(this);
@@ -97,6 +103,7 @@ public class Habitat extends JFrame {
 
         _timerLabel = new JLabel("Simulation hasn't started yet");
         _timerLabel.setVerticalAlignment(JLabel.TOP);
+        if (!_timerFlag) { _controlPanel._timeButton.setText("Show Timer"); _timerLabel.setVisible(false);}
         _timerPanel.add(_timerLabel);
 
         //<---------Graphics Panel--------->
@@ -119,6 +126,10 @@ public class Habitat extends JFrame {
         //<---------AI--------->
         _devAI = new DevAI(_employeeList, _graphicsPanel);
         _manAI = new ManAI(_employeeList, _graphicsPanel);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            co.writeConfig(_controlPanel.getInfoFlag(), _timerFlag);
+        }));
     }
 
     public Habitat(int x, int y, int width, int height) {
@@ -127,6 +138,7 @@ public class Habitat extends JFrame {
         _y = y;
         _width = width;
         _height = height;
+        
     }
 
     public void createFrame() {
