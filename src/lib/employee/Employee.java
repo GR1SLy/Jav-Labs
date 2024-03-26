@@ -1,8 +1,11 @@
 package lib.employee;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 
-public abstract class Employee implements IBehaviour{
+public abstract class Employee implements IBehaviour, Serializable {
+
+    private static final long serialVersionUID = 6473L;
     
     protected int _x, _y, _id;
 
@@ -18,6 +21,8 @@ public abstract class Employee implements IBehaviour{
     }
 
     public static int getCount() { return $count; }
+
+    public static void setCount(int count) { $count = count; }
 
     public static void clear() { $count = 0; }
 

@@ -12,7 +12,7 @@ public class Developer extends Employee {
 
     private int _maxX, _maxY, _dx = 1, _dy = 1;
 
-    private long _systemBirthTime = System.currentTimeMillis();
+    private transient long _systemBirthTime = System.currentTimeMillis();
 
     private static Random $rand = new Random();
 
@@ -34,6 +34,8 @@ public class Developer extends Employee {
     public static int getLifeTime() { return $lifeTime; }
 
     public static int getCount() { return $count; }
+
+    public static void setCount(int count) { $count = count; }
 
     public static void clear() { $count = 0; }
 

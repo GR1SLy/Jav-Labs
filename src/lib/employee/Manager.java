@@ -33,6 +33,8 @@ public class Manager extends Employee {
 
     public static int getCount() { return $count; }
 
+    public static void setCount(int count) { $count = count; }
+
     public static void clear() { $count = 0; }
 
     public static void decCount() { $count--; }

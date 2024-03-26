@@ -9,7 +9,9 @@ import lib.employee.Manager;
 
 public class ConfigOperator {
 
-    private String _direction = "../cfg.cfg";
+    private static String $direction = "../cfg.cfg";
+
+    static void setDirection(String dir) { $direction = dir; }
 
     class boolPair {
         public boolean showInfo, showTimer;
@@ -26,12 +28,12 @@ public class ConfigOperator {
 
     public ConfigOperator(String dir) {
         super();
-        _direction = dir;
+        $direction = dir;
     }
 
     void writeConfig(boolean showInfo, boolean showTimer) {
         try {
-            FileWriter writer = new FileWriter(_direction);
+            FileWriter writer = new FileWriter($direction);
             String wString = Developer.getGenerateTime() + "\n" + Developer.getLifeTime() + "\n" + Developer.getGenerateChance() + "\n" +
                              Manager.getGenerateTime() + "\n" + Manager.getLifeTime() + "\n" + Manager.getGeneratePercent() + "\n";
             if (showInfo) wString += "1\n"; else wString += "0\n";
@@ -43,7 +45,7 @@ public class ConfigOperator {
 
     boolPair readConfig() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(_direction));
+            BufferedReader reader = new BufferedReader(new FileReader($direction));
             Developer.setGenerateTime(Integer.parseInt(reader.readLine()));
             Developer.setLifeTime(Integer.parseInt(reader.readLine()));
             Developer.setGenerateChance(Integer.parseInt(reader.readLine()));
@@ -55,7 +57,7 @@ public class ConfigOperator {
             reader.close();
             return new boolPair(showInfo, showTimer);
         } catch (Exception e) { 
-            System.err.println("No such file: " + _direction + "\nNew file will be created");
+            System.err.println("No such file: " + $direction + "\nNew file will be created");
          }
         return new boolPair(false, true);
     }

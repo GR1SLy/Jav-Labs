@@ -27,13 +27,14 @@ import lib.ai.ManAI;
 import lib.employee.*;
 
 public class Habitat extends JFrame {
-    private class Pair {
+    static class Pair {
         public Employee emp1;
         public LinkedList<Employee> emp2;
         public Pair() { emp1 = null; emp2 = null; }
         public boolean isEmpty() { return emp1 == null && emp2 == null; }
     }
-    private int _x, _y, _width, _height;
+
+    private final int WIDTH, HEIGHT;
 
     private LinkedList<Employee> _employeeList;
     private HashMap<Integer, Pair> _employeeBirthTime;
@@ -54,6 +55,8 @@ public class Habitat extends JFrame {
     private int _timerX = 1, _currentTime = 0;
     private boolean _timerFlag = true;
     private boolean _isRunning = false;
+
+    private Console _console;
 
     {
         ConfigOperator co = new ConfigOperator();
@@ -103,7 +106,7 @@ public class Habitat extends JFrame {
 
         _timerLabel = new JLabel("Simulation hasn't started yet");
         _timerLabel.setVerticalAlignment(JLabel.TOP);
-        if (!_timerFlag) { _controlPanel._timeButton.setText("Show Timer"); _timerLabel.setVisible(false);}
+        if (!_timerFlag) { _controlPanel._timeButton.setText("Show Timer"); _timerLabel.setVisible(false); }
         _timerPanel.add(_timerLabel);
 
         //<---------Graphics Panel--------->
@@ -130,19 +133,19 @@ public class Habitat extends JFrame {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             co.writeConfig(_controlPanel.getInfoFlag(), _timerFlag);
         }));
+
+        _console = new Console(this);
     }
 
-    public Habitat(int x, int y, int width, int height) {
+    public Habitat(int width, int height) {
         super();
-        _x = x;
-        _y = y;
-        _width = width;
-        _height = height;
+        WIDTH = width;
+        HEIGHT = height;
         
     }
 
     public void createFrame() {
-        setBounds(_x, _y, _width, _height);
+        setBounds(0, 0, WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addKeyListener(new KeyAdapter() {
@@ -158,10 +161,12 @@ public class Habitat extends JFrame {
         });
         setVisible(true);
         setJMenuBar(_menuBar);
-
+        
         _devAI.start();
         _manAI.start();
         pauseAI();
+
+        _console.start();
     }
 
     void switchCard() {
@@ -200,6 +205,12 @@ public class Habitat extends JFrame {
         _backToMenuButton.setEnabled(true);
     }
 
+    boolean isRunning() { return _isRunning; }
+
+    public void setTimerAcceleration(int X) {
+        if (X > 0) _timerX = X;
+    }
+
     void clear() {
         _employeeList.clear();
         _employeeBirthTime.clear();
@@ -211,36 +222,11 @@ public class Habitat extends JFrame {
         _graphicsPanel.repaint();
     }
 
-    public void setTimerAcceleration(int X) {
-        if (X > 0) _timerX = X;
-    }
-
     private int findID(Random rand) {
         Integer id = rand.nextInt(1000, 9999);
         while (_employeeID.contains(id)) id = rand.nextInt(1000, 9999);
         _employeeID.add(id);
         return id;
-    }
-
-    String getObjects() {
-        String res = "Current objects:\n";
-        Employee emp1;
-        LinkedList<Employee> emp2;
-        for (Map.Entry<Integer, Pair> entry : _employeeBirthTime.entrySet()) {
-            emp1 = entry.getValue().emp1;
-            emp2 = entry.getValue().emp2;
-            if (emp1 != null) res += emp1 + "\n";
-            if (emp2 != null) res += emp2 + "\n";
-        }
-        return res;
-    }
-
-    @Override
-    public String toString() {
-        return "Simulation statistics:" +
-        "\nDeveloper count: " + Developer.getCount() +
-        "\nManager count: " + Manager.getCount() + 
-        "\nTotal employee count: " + Employee.getCount();
     }
 
     private void update(final int currentTime) {
@@ -295,6 +281,19 @@ public class Habitat extends JFrame {
             Employee.decCount();
             if (_employeeBirthTime.get(_currentTime - Manager.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Manager.getLifeTime());
         }
+    }
+
+    String getObjects() {
+        String res = "Current objects:\n";
+        Employee emp1;
+        LinkedList<Employee> emp2;
+        for (Map.Entry<Integer, Pair> entry : _employeeBirthTime.entrySet()) {
+            emp1 = entry.getValue().emp1;
+            emp2 = entry.getValue().emp2;
+            if (emp1 != null) res += emp1 + "\n";
+            if (emp2 != null) res += emp2 + "\n";
+        }
+        return res;
     }
 
     private void resumeAI() { 
@@ -353,5 +352,38 @@ public class Habitat extends JFrame {
             }
         }
         System.out.println("!!Created " + n + " new managers!!");
+    }
+
+    void serialize() {
+        try {
+            Serializer serializer = new Serializer(_currentTime, _employeeList);
+            Serializer.serialize(serializer);
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    void deserialize() {
+        try {
+            Serializer serializer = (Serializer)Serializer.deserialize();
+            if (_isRunning) {
+                stopSimulation();
+                clear();
+            }
+            serializer.setCounts();
+            _employeeList = serializer.getEmployeeList();
+            _employeeBirthTime = serializer.getEmployeeMap();
+            _employeeID = serializer.getEmployeeTree();
+            _currentTime = serializer.getTime();
+            _devAI.setEmployees(_employeeList);
+            _manAI.setEmployees(_employeeList);
+            startSimulation();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    @Override
+    public String toString() {
+        return "Simulation statistics:" +
+        "\nDeveloper count: " + Developer.getCount() +
+        "\nManager count: " + Manager.getCount() + 
+        "\nTotal employee count: " + Employee.getCount();
     }
 }

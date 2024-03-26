@@ -14,6 +14,8 @@ public abstract class BaseAI extends Thread {
 
     protected LinkedList<Employee> _employees;
 
+    public void setEmployees(LinkedList<Employee> employees) { this._employees = employees; }
+
     protected JPanel _graphicsPanel;
 
     public BaseAI(LinkedList<Employee> employees, JPanel graphicsPanel) { 
