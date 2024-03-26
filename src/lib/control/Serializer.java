@@ -1,5 +1,6 @@
 package lib.control;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,13 +12,31 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
 import lib.employee.*;
 
 public class Serializer implements Serializable {
     
     private static final long serialVersionUID = 6473L;
 
-    private static String $direction = "../objects.bin";
+    private static String $saveDirection = "../objects.bin";
+    private static String $loadDirection = "../objects.bin";
+
+    static void chooseSaveFile() {
+        JFileChooser chooser = new JFileChooser();
+        File file = null;
+        if (chooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
+        if (file != null) $saveDirection = file.getAbsolutePath();
+    }
+
+    static void chooseLoadFile() {
+        JFileChooser chooser = new JFileChooser();
+        File file = null;
+        if (chooser.showOpenDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
+        if (file != null) $loadDirection = file.getAbsolutePath();
+    }
 
     private int _devCount, _manCount, _totalCount, _currentTime;
     private LinkedList<Employee> _employeeList;
@@ -46,14 +65,14 @@ public class Serializer implements Serializable {
     TreeSet<Integer> getEmployeeTree() { return createTree(); }
 
     static void serialize(Serializer object) throws FileNotFoundException, IOException {
-        FileOutputStream out = new FileOutputStream($direction);
+        FileOutputStream out = new FileOutputStream($saveDirection);
         ObjectOutputStream oos = new ObjectOutputStream(out);
         oos.writeObject(object);
         oos.close();
     }
 
     static Serializer deserialize() throws FileNotFoundException, IOException, ClassNotFoundException {
-        FileInputStream in = new FileInputStream($direction);
+        FileInputStream in = new FileInputStream($loadDirection);
         ObjectInputStream ois = new ObjectInputStream(in);
         Serializer res = (Serializer)ois.readObject();
         ois.close();

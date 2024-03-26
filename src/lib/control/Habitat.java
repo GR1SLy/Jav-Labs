@@ -60,6 +60,7 @@ public class Habitat extends JFrame {
 
     {
         ConfigOperator co = new ConfigOperator();
+        ConfigOperator.chooseFile();
         ConfigOperator.boolPair pair = co.readConfig();
         _timerFlag = pair.showTimer;
         

@@ -69,7 +69,11 @@ public class Console extends Thread{
                 else _habitat._controlPanel._stopButton.doClick();
             }
             case "serialize" -> _habitat.serialize();
+            case "serialize dir" -> Serializer.chooseSaveFile();
             case "deserialize" -> _habitat.deserialize();
+            case "deserialize dir" -> Serializer.chooseLoadFile();
+            case "cfg dir" -> ConfigOperator.chooseFile();
+            case "clear" -> System.out.println("\033[H\033[2J");
             case "help" -> getCommands();
             default -> System.err.println("Unknown command: " + command + "\nType help for more information");
         }
@@ -87,8 +91,14 @@ public class Console extends Thread{
                            "\nsim:" + 
                                 "\n\tstart - start simulation" + 
                                 "\n\tstop - stop simulation" +
-                           "\nserialize - serialize all objects" +
-                           "\ndeserialize - deserialize all objects");
+                           "\nserialize:" +
+                                "\n\t- serialize all objects" +
+                                "\n\tdir - set directory for save" +
+                           "\ndeserialize" +
+                                "\n\t- deserialize all objects" +
+                                "\n\tdir - set directory for load" + 
+                           "\ncfg dir - set configuration directory" +
+                           "\nclear - clear console");
     }
 }
 

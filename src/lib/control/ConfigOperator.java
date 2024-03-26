@@ -1,8 +1,12 @@
 package lib.control;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 
 import lib.employee.Developer;
 import lib.employee.Manager;
@@ -12,6 +16,13 @@ public class ConfigOperator {
     private static String $direction = "../cfg.cfg";
 
     static void setDirection(String dir) { $direction = dir; }
+
+    static void chooseFile() {
+        JFileChooser chooser = new JFileChooser();
+        File file = null;
+        if (chooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
+        if (file != null) $direction = file.getAbsolutePath();
+    }
 
     class boolPair {
         public boolean showInfo, showTimer;
