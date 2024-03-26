@@ -60,7 +60,7 @@ public class Habitat extends JFrame {
 
     {
         ConfigOperator co = new ConfigOperator();
-        ConfigOperator.chooseFile();
+        ConfigOperator.chooseLoadFile();
         ConfigOperator.boolPair pair = co.readConfig();
         _timerFlag = pair.showTimer;
         
@@ -365,9 +365,11 @@ public class Habitat extends JFrame {
     void deserialize() {
         try {
             Serializer serializer = (Serializer)Serializer.deserialize();
+            boolean stopped = false;
             if (_isRunning) {
                 stopSimulation();
                 clear();
+                stopped = true;
             }
             serializer.setCounts();
             _employeeList = serializer.getEmployeeList();
@@ -376,7 +378,7 @@ public class Habitat extends JFrame {
             _currentTime = serializer.getTime();
             _devAI.setEmployees(_employeeList);
             _manAI.setEmployees(_employeeList);
-            startSimulation();
+            if (stopped) startSimulation();
         } catch (Exception e) { e.printStackTrace(); }
     }
 

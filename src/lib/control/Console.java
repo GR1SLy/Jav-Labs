@@ -72,7 +72,7 @@ public class Console extends Thread{
             case "serialize dir" -> Serializer.chooseSaveFile();
             case "deserialize" -> _habitat.deserialize();
             case "deserialize dir" -> Serializer.chooseLoadFile();
-            case "cfg dir" -> ConfigOperator.chooseFile();
+            case "cfg dir" -> ConfigOperator.chooseSaveFile();
             case "clear" -> System.out.println("\033[H\033[2J");
             case "help" -> getCommands();
             default -> System.err.println("Unknown command: " + command + "\nType help for more information");

@@ -14,6 +14,7 @@ import java.util.TreeSet;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import lib.employee.*;
 
@@ -25,14 +26,18 @@ public class Serializer implements Serializable {
     private static String $loadDirection = "../objects.bin";
 
     static void chooseSaveFile() {
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser($saveDirection);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".bin", "bin");
+        chooser.setFileFilter(filter);
         File file = null;
         if (chooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
         if (file != null) $saveDirection = file.getAbsolutePath();
     }
 
     static void chooseLoadFile() {
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser($loadDirection);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".bin", "bin");
+        chooser.setFileFilter(filter);
         File file = null;
         if (chooser.showOpenDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
         if (file != null) $loadDirection = file.getAbsolutePath();

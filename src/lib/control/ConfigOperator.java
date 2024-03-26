@@ -7,6 +7,7 @@ import java.io.FileWriter;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import lib.employee.Developer;
 import lib.employee.Manager;
@@ -17,10 +18,23 @@ public class ConfigOperator {
 
     static void setDirection(String dir) { $direction = dir; }
 
-    static void chooseFile() {
-        JFileChooser chooser = new JFileChooser();
+    static void chooseSaveFile() {
+        JFileChooser chooser = new JFileChooser($direction);
+        chooser.setDialogTitle("Save Config file");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".cfg", "cfg");
+        chooser.setFileFilter(filter);
         File file = null;
         if (chooser.showSaveDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
+        if (file != null) $direction = file.getAbsolutePath();
+    }
+
+    static void chooseLoadFile() {
+        JFileChooser chooser = new JFileChooser($direction);
+        chooser.setDialogTitle("Choose Config file");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".cfg", "cfg");
+        chooser.setFileFilter(filter);
+        File file = null;
+        if (chooser.showOpenDialog(new JFrame()) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
         if (file != null) $direction = file.getAbsolutePath();
     }
 

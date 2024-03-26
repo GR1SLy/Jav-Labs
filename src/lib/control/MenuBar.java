@@ -6,8 +6,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
 public class MenuBar extends JMenuBar {
-    private JMenu _headMenu, _timerMenu, _AIMenu;
-    private JMenuItem _startItem, _stopItem, _showTimerItem, _showInfoItem, _showObjectsItem, _devAIItem, _manAIItem;
+    private JMenu _headMenu, _timerMenu, _AIMenu, _fileMenu;
+    private JMenuItem _startItem, _stopItem, _showTimerItem, 
+                      _showInfoItem, _showObjectsItem, _devAIItem, 
+                      _manAIItem, _saveItem, _loadItem, _cfgItem;
     private JSeparator _separator1, _separator2;
     private boolean _showTimer, _showInfo, _devAI, _manAI;
     private Habitat _habitat;
@@ -80,7 +82,34 @@ public class MenuBar extends JMenuBar {
 
         _headMenu.add(_AIMenu);
 
+
+        _fileMenu = new JMenu("File");
+
+        _saveItem = new JMenuItem("Save");
+        _saveItem.addActionListener(e -> {
+                Serializer.chooseSaveFile();
+                _habitat.serialize();
+        });
+        _fileMenu.add(_saveItem);
+
+        _loadItem = new JMenuItem("Load");
+        _loadItem.addActionListener(e -> {
+                Serializer.chooseLoadFile();
+                _habitat.deserialize();
+        });
+        _fileMenu.add(_loadItem);
+
+        _cfgItem = new JMenuItem("Save config");
+        _cfgItem.addActionListener(e -> {
+                ConfigOperator.chooseSaveFile();
+        });
+        _fileMenu.add(_cfgItem);
+
+        add(_fileMenu);
+
         add(_headMenu);
+
+
     }
 
     public MenuBar(Habitat habitat) {
