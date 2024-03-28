@@ -53,7 +53,6 @@ public abstract class BaseAI extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            // System.out.println(getName() + " is working");
         }
     }
 

@@ -43,7 +43,7 @@ public class MenuPanel extends JPanel {
                 Manager.setLifeTime(Integer.parseInt(_getManLifeTime.getText()));
                 _habitat.switchCard();
             } catch (Exception ex) {
-                System.out.println("ERROR: Incorrect data");
+                System.err.println("ERROR: Incorrect data");
                 JOptionPane.showMessageDialog(MenuPanel.this, "Invalid time data", "ERROR", JOptionPane.ERROR_MESSAGE);
                 _getDevTime.setText("" + Developer.getGenerateTime());
                 _getDevLifeTime.setText("" + Developer.getLifeTime());

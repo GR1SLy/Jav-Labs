@@ -74,6 +74,7 @@ public class Serializer implements Serializable {
         ObjectOutputStream oos = new ObjectOutputStream(out);
         oos.writeObject(object);
         oos.close();
+        out.close();
     }
 
     static Serializer deserialize() throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -81,6 +82,7 @@ public class Serializer implements Serializable {
         ObjectInputStream ois = new ObjectInputStream(in);
         Serializer res = (Serializer)ois.readObject();
         ois.close();
+        in.close();
         return res;
     }
 

@@ -80,7 +80,7 @@ public class ControlPanel extends JPanel {
         _infoButton = new JToggleButton("Show Information");
         _infoButton.addActionListener(e -> {
                 _showInfo = !_showInfo;
-                System.out.println("Show info: " + _showInfo);
+                System.err.println("Show info: " + _showInfo);
         });
         _infoButton.setFocusable(false);
         _infoButton.setSelected(!_showInfo);
@@ -139,7 +139,7 @@ public class ControlPanel extends JPanel {
 
     private void showInfoPane() {
         int choose = JOptionPane.showConfirmDialog(_habitat, _habitat + "\nStop simulation?", "CANCELED", JOptionPane.YES_NO_OPTION);
-                System.out.println(choose);
+                System.err.println(choose);
                 switch(choose) {
                     case 0 -> _habitat.clear();
                     case 1 -> _startButton.doClick();

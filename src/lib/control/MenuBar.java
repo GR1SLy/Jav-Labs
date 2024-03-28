@@ -9,7 +9,8 @@ public class MenuBar extends JMenuBar {
     private JMenu _headMenu, _timerMenu, _AIMenu, _fileMenu;
     private JMenuItem _startItem, _stopItem, _showTimerItem, 
                       _showInfoItem, _showObjectsItem, _devAIItem, 
-                      _manAIItem, _saveItem, _loadItem, _cfgItem;
+                      _manAIItem, _saveItem, _loadItem, _cfgItem,
+                      _consoleItem;
     private JSeparator _separator1, _separator2;
     private boolean _showTimer, _showInfo, _devAI, _manAI;
     private Habitat _habitat;
@@ -104,6 +105,12 @@ public class MenuBar extends JMenuBar {
                 ConfigOperator.chooseSaveFile();
         });
         _fileMenu.add(_cfgItem);
+
+        _consoleItem = new JMenuItem("Console");
+        _consoleItem.addActionListener(e -> {
+                _habitat.showConsole();
+        });
+        _fileMenu.add(_consoleItem);
 
         add(_fileMenu);
 

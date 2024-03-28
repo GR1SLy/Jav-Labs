@@ -56,7 +56,7 @@ public class Habitat extends JFrame {
     private boolean _timerFlag = true;
     private boolean _isRunning = false;
 
-    private Console _console;
+    private ConsoleDialog _console;
 
     {
         ConfigOperator co = new ConfigOperator();
@@ -135,8 +135,10 @@ public class Habitat extends JFrame {
             co.writeConfig(_controlPanel.getInfoFlag(), _timerFlag);
         }));
 
-        _console = new Console(this);
+        _console = new ConsoleDialog(this);
     }
+
+    void showConsole() { _console.showDialog(); }
 
     public Habitat(int width, int height) {
         super();
@@ -157,7 +159,7 @@ public class Habitat extends JFrame {
                     case KeyEvent.VK_E -> { if (_isRunning) { _controlPanel._stopButton.doClick(); }}
                     case KeyEvent.VK_T -> _controlPanel._timeButton.doClick();
                 }
-                System.out.println(e.getKeyChar());
+                System.err.println(e.getKeyChar());
             }
         });
         setVisible(true);
@@ -166,8 +168,6 @@ public class Habitat extends JFrame {
         _devAI.start();
         _manAI.start();
         pauseAI();
-
-        _console.start();
     }
 
     void switchCard() {
@@ -245,7 +245,7 @@ public class Habitat extends JFrame {
                 Employee emp = new Developer(rect.width, rect.height, _currentTime, findID(rand));
                 pair.emp1 = emp;
                 _employeeList.addLast(emp);
-                System.out.println("Created new Developer!\tTotal count: " + Developer.getCount());
+                System.err.println("Created new Developer!\tTotal count: " + Developer.getCount());
             }
         }
         if (_currentTime % Manager.getGenerateTime() == 0) {
@@ -255,7 +255,7 @@ public class Habitat extends JFrame {
                 emp2.add(emp);
                 pair.emp2 = emp2;
                 _employeeList.addLast(emp);
-                System.out.println("Created new Manager!\tTotal count: " + Manager.getCount());
+                System.err.println("Created new Manager!\tTotal count: " + Manager.getCount());
             }
         }
         if (!pair.isEmpty()) _employeeBirthTime.put(_currentTime, pair);
@@ -331,7 +331,7 @@ public class Habitat extends JFrame {
                 _employeeBirthTime.get(emp.getBirthTime()).emp2 = null;
             }
         }
-        System.out.println("!!Managers have fired!!");
+        System.err.println("!!Managers have fired!!");
     }
 
     void hireManagers(int n) {
@@ -352,7 +352,7 @@ public class Habitat extends JFrame {
                 _employeeBirthTime.put(_currentTime, pair);
             }
         }
-        System.out.println("!!Created " + n + " new managers!!");
+        System.err.println("!!Created " + n + " new managers!!");
     }
 
     void serialize() {
