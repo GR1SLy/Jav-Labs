@@ -2,6 +2,7 @@ package lib.control;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -148,6 +149,7 @@ public class Habitat extends JFrame {
     }
 
     public void createFrame() {
+        setMinimumSize(new Dimension(600, 600));
         setBounds(0, 0, WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -158,6 +160,7 @@ public class Habitat extends JFrame {
                     case KeyEvent.VK_B -> { if (!_isRunning) _controlPanel._startButton.doClick(); }
                     case KeyEvent.VK_E -> { if (_isRunning) { _controlPanel._stopButton.doClick(); }}
                     case KeyEvent.VK_T -> _controlPanel._timeButton.doClick();
+                    case KeyEvent.VK_BACK_QUOTE -> showConsole();
                 }
                 System.err.println(e.getKeyChar());
             }
@@ -278,7 +281,7 @@ public class Habitat extends JFrame {
                 _employeeList.remove(emp2);
             }
             _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 = null;
-            Manager.decCount();
+            for (int i = 0; i < emp.size(); i++ ) Manager.decCount();
             Employee.decCount();
             if (_employeeBirthTime.get(_currentTime - Manager.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Manager.getLifeTime());
         }
@@ -331,6 +334,7 @@ public class Habitat extends JFrame {
                 _employeeBirthTime.get(emp.getBirthTime()).emp2 = null;
             }
         }
+        for (int i = 0; i < deathNote.size(); i++) Manager.decCount();
         System.err.println("!!Managers have fired!!");
     }
 

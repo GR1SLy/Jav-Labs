@@ -11,8 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
+import javax.swing.text.*;
 
 import lib.employee.Manager;
 
@@ -31,7 +30,8 @@ public class ConsoleDialog extends JFrame {
     private int _len = 0, _off = 0;
     private byte[] _cbuf = null;
     private boolean _eol = false, _countNeeded = false, 
-                    _velNeeded = false, _timeNeeded = false;
+                    _velNeeded = false, _timeNeeded = false,
+                    _isClearing = false;
     private Scanner _scanner;
 
     {
@@ -48,6 +48,18 @@ public class ConsoleDialog extends JFrame {
         add(_panel);
 
         _pane = new JTextPane();
+        ((AbstractDocument)_pane.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, 
+                                String text, AttributeSet attrs) throws BadLocationException {
+                if (_isClearing || offset >= _off - 1) super.replace(fb, offset, length, text, attrs);
+            }
+            public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+                if (_isClearing || offset >= _off) {
+                    super.remove(fb, offset, length);
+                }
+            }
+        });
         _doc = _pane.getDocument();
         _pane.addKeyListener(new KeyAdapter() {
             @Override
@@ -57,26 +69,26 @@ public class ConsoleDialog extends JFrame {
                     if (_countNeeded) {
                         try { 
                             int n = Integer.parseInt(command);
-                            if (n <= 0) System.out.println("\nCount must be a positive integer");
-                            else { System.out.println("\nCreated " + n + " managers"); _habitat.hireManagers(n); }
+                            if (n <= 0) System.out.print("\nCount must be a positive integer");
+                            else { System.out.print("\nCreated " + n + " managers"); _habitat.hireManagers(n); }
                         }
-                        catch (NumberFormatException ex) { System.out.println("\nCount must be a positive integer"); }
+                        catch (NumberFormatException ex) { System.out.print("\nCount must be a positive integer"); }
                         _countNeeded = false;
                     } else if (_velNeeded) {
                         try { 
                             int v = Integer.parseInt(command);
-                            if (v <= 0) System.out.println("\nVelocity must be a positive integer");
-                            else { System.out.println("\nVelocity setted " + v); _habitat.setAIV(v); }
+                            if (v <= 0) System.out.print("\nVelocity must be a positive integer");
+                            else { System.out.print("\nVelocity setted " + v); _habitat.setAIV(v); }
                         }
-                        catch (NumberFormatException ex) { System.out.println("\nVelocity must be a positive integer"); }
+                        catch (NumberFormatException ex) { System.out.print("\nVelocity must be a positive integer"); }
                         _velNeeded = false;
                     } else if (_timeNeeded) {
                         try { 
                             int t = Integer.parseInt(command);
-                            if (t <= 0) System.out.println("\nTime must be a positive integer");
-                            else { System.out.println("\nChange time setted " + t); _habitat.setAIN(t); }
+                            if (t <= 0) System.out.print("\nTime must be a positive integer");
+                            else { System.out.print("\nChange time setted " + t); _habitat.setAIN(t); }
                         }
-                        catch (NumberFormatException ex) { System.out.println("\nTime must be a positive integer"); }
+                        catch (NumberFormatException ex) { System.out.print("\nTime must be a positive integer"); }
                         _timeNeeded = false;
                     } else checkCommand(command);
                 }
@@ -97,35 +109,40 @@ public class ConsoleDialog extends JFrame {
 
     private void checkCommand(String command) {
         switch (command) {
-            case "manager rm" -> { System.out.println("\nManagers have been removed"); _habitat.fireManagers(); }
+            case "manager rm" -> { System.out.print("\nManagers have been removed"); _habitat.fireManagers(); }
             case "manager add" -> { System.out.print("\nCount: "); _countNeeded = true; }
-            case "manager count" -> { System.out.println("\nManager count: " + Manager.getCount()); }
+            case "manager count" -> { System.out.print("\nManager count: " + Manager.getCount()); }
             case "ai velocity" -> { System.out.print("\nVelocity: "); _velNeeded = true; }
             case "ai time" -> { System.out.print("\nTime: "); _timeNeeded = true; }
             case "sim start" -> {
-                if (_habitat.isRunning()) System.out.println("Simulation is already running");
-                else _habitat._controlPanel._startButton.doClick();
+                if (_habitat.isRunning()) System.out.print("\nSimulation is already running");
+                else { System.out.print("\nSimulation has been started"); _habitat._controlPanel._startButton.doClick(); }
             }
             case "sim stop" -> {
-                if (!_habitat.isRunning()) System.out.println("Simulation is already cancelled");
-                else _habitat._controlPanel._stopButton.doClick();
+                if (!_habitat.isRunning()) System.out.print("\nSimulation is already cancelled");
+                else { System.out.print("\nSimulation has been canceled");  _habitat._controlPanel._stopButton.doClick(); }
             }
-            case "serialize" -> { System.out.println("\nObjects have been serialized"); _habitat.serialize(); }
+            case "serialize" -> { System.out.print("\nObjects have been serialized"); _habitat.serialize(); }
             case "serialize dir" -> Serializer.chooseSaveFile();
-            case "deserialize" -> { System.out.println("\nObjects have been deserialized"); _habitat.deserialize(); }
+            case "deserialize" -> { System.out.print("\nObjects have been deserialized"); _habitat.deserialize(); }
             case "deserialize dir" -> Serializer.chooseLoadFile();
             case "cfg dir" -> ConfigOperator.chooseSaveFile();
             case "clear" -> {
-                try { _doc.remove(0, _doc.getLength()); _off = 1; } 
+                try {
+                    _isClearing = true;
+                    _doc.remove(0, _doc.getLength()); 
+                    _isClearing = false;
+                    _off = 1;
+                } 
                 catch (BadLocationException e) { e.printStackTrace(); }
             }
             case "help" -> getCommands();
-            default -> { System.out.println("\nUnknown command: " + command + "\nType help for more information"); }
+            default -> { System.out.print("\nUnknown command: " + command + "\nType help for more information"); }
         }
     }
 
     private void getCommands() {
-        System.out.println("\nCurrent commands:" + 
+        System.out.print("\nCurrent commands:" + 
                            "\nmanager:" + 
                                 "\n\trm - delete all managers" + 
                                 "\n\tadd - create N new managers" + 
@@ -174,7 +191,6 @@ public class ConsoleDialog extends JFrame {
             e.printStackTrace();
         }
     }
-
 }
 
 class ConsoleInputStream extends InputStream {
