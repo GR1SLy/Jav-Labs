@@ -91,7 +91,7 @@ public class ConsoleDialog extends JFrame {
                         catch (NumberFormatException ex) { System.out.print("\nTime must be a positive integer"); }
                         _timeNeeded = false;
                     } else checkCommand(command);
-                }
+                } else if (e.getKeyCode() == KeyEvent.VK_BACK_QUOTE) setVisible(false);
             }
         });
         _scroll = new JScrollPane(_pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
