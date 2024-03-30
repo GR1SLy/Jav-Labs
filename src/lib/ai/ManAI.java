@@ -21,10 +21,13 @@ public class ManAI extends BaseAI {
 
     @Override
     synchronized void process() {
-        for (Employee man : _employees) {
-            if (man instanceof Manager) {
-                man.move(_isRunning);
-            }
+        for (int i = 0; i < _employees.size(); i++) {
+            try {
+                Employee emp = _employees.get(i);
+                if (emp instanceof Manager) {
+                    emp.move(_isRunning);
+                }
+            } catch (Exception e) {}
         }
     }
 }

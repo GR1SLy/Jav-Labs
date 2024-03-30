@@ -21,10 +21,13 @@ public class DevAI extends BaseAI {
 
     @Override
     synchronized void process() {
-        for (Employee dev : _employees) {
-            if (dev instanceof Developer) {
-                dev.move(_isRunning);
-            }
+        for (int i = 0; i < _employees.size(); i++) {
+            try {
+                Employee emp = _employees.get(i);
+                if (emp instanceof Developer) {
+                    emp.move(_isRunning);
+                }
+            } catch (Exception e) {}
         }
     }
     
