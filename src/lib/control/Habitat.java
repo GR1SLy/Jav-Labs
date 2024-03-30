@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class Habitat extends JFrame {
     private MenuPanel _menuPanel;
     private JButton _backToMenuButton;
     private MenuBar _menuBar;
-    ControlPanel _controlPanel;
+    private ControlPanel _controlPanel;
 
     private Timer _timer;
     private int _timerX = 1, _currentTime = 0;
@@ -58,6 +59,8 @@ public class Habitat extends JFrame {
     private boolean _isRunning = false;
 
     private ConsoleDialog _console;
+
+    ControlPanel getControlPanel() { return _controlPanel; }
 
     {
         ConfigOperator co = new ConfigOperator();
@@ -108,7 +111,7 @@ public class Habitat extends JFrame {
 
         _timerLabel = new JLabel("Simulation hasn't started yet");
         _timerLabel.setVerticalAlignment(JLabel.TOP);
-        if (!_timerFlag) { _controlPanel._timeButton.setText("Show Timer"); _timerLabel.setVisible(false); }
+        if (!_timerFlag) { _controlPanel.getTimeButton().setText("Show Timer"); _timerLabel.setVisible(false); }
         _timerPanel.add(_timerLabel);
 
         //<---------Graphics Panel--------->
@@ -157,9 +160,9 @@ public class Habitat extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch(e.getKeyCode()) {
-                    case KeyEvent.VK_B -> { if (!_isRunning) _controlPanel._startButton.doClick(); }
-                    case KeyEvent.VK_E -> { if (_isRunning) { _controlPanel._stopButton.doClick(); }}
-                    case KeyEvent.VK_T -> _controlPanel._timeButton.doClick();
+                    case KeyEvent.VK_B -> { if (!_isRunning) _controlPanel.getStartButton().doClick(); }
+                    case KeyEvent.VK_E -> { if (_isRunning) { _controlPanel.getStopButton().doClick(); }}
+                    case KeyEvent.VK_T -> _controlPanel.getTimeButton().doClick();
                     case KeyEvent.VK_BACK_QUOTE -> showConsole();
                 }
                 System.err.println(e.getKeyChar());
@@ -363,7 +366,7 @@ public class Habitat extends JFrame {
         try {
             Serializer serializer = new Serializer(_currentTime, _employeeList);
             Serializer.serialize(serializer);
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     void deserialize() {
@@ -383,7 +386,7 @@ public class Habitat extends JFrame {
             _devAI.setEmployees(_employeeList);
             _manAI.setEmployees(_employeeList);
             if (stopped) startSimulation();
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }
 
     @Override

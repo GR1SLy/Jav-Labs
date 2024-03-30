@@ -10,8 +10,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 public class ControlPanel extends JPanel {
-    JButton _startButton, _stopButton, _timeButton, _stopDevAIButton, _stopManAIButton, _objectsButton;
-    JToggleButton _infoButton;
+    private JButton _startButton, _stopButton, _timeButton, 
+                    _stopDevAIButton, _stopManAIButton, _objectsButton;
+    private JToggleButton _infoButton;
     private JComboBox<String> _priorityAI;
     private boolean _showInfo;
     private boolean _devAI, _manAI;
@@ -19,6 +20,14 @@ public class ControlPanel extends JPanel {
                    _stopManAIPanel, _infoPanel, _timePanel, 
                    _objectsPanel, _priorityPanel;
     private Habitat _habitat;
+
+    JButton getStartButton() { return _startButton; }
+    JButton getStopButton() { return _stopButton; }
+    JButton getTimeButton() { return _timeButton; }
+    JButton getStopDevAIButton() { return _stopDevAIButton; }
+    JButton getStopManAIButton() { return _stopManAIButton; }
+    JButton getObjectsButton() { return _objectsButton; }
+    JToggleButton getInfoButton() { return _infoButton; }
 
     {
         _devAI = _manAI = true;

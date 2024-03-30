@@ -116,11 +116,11 @@ public class ConsoleDialog extends JFrame {
             case "ai time" -> { System.out.print("\nTime: "); _timeNeeded = true; }
             case "sim start" -> {
                 if (_habitat.isRunning()) System.out.print("\nSimulation is already running");
-                else { System.out.print("\nSimulation has been started"); _habitat._controlPanel._startButton.doClick(); }
+                else { System.out.print("\nSimulation has been started"); _habitat.getControlPanel().getStartButton().doClick(); }
             }
             case "sim stop" -> {
                 if (!_habitat.isRunning()) System.out.print("\nSimulation is already cancelled");
-                else { System.out.print("\nSimulation has been canceled");  _habitat._controlPanel._stopButton.doClick(); }
+                else { System.out.print("\nSimulation has been canceled");  _habitat.getControlPanel().getStopButton().doClick(); }
             }
             case "serialize" -> { System.out.print("\nObjects have been serialized"); _habitat.serialize(); }
             case "serialize dir" -> Serializer.chooseSaveFile();

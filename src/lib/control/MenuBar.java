@@ -25,14 +25,14 @@ public class MenuBar extends JMenuBar {
 
         _startItem = new JMenuItem("Start");
         _startItem.addActionListener(e -> {
-                _habitat._controlPanel._startButton.doClick();
+                _habitat.getControlPanel().getStartButton().doClick();
         });
         _timerMenu.add(_startItem);
 
         
         _stopItem = new JMenuItem("Stop");
         _stopItem.addActionListener(e -> {
-                _habitat._controlPanel._stopButton.doClick();
+                _habitat.getControlPanel().getStopButton().doClick();
         });
         _timerMenu.add(_stopItem);
         
@@ -44,7 +44,7 @@ public class MenuBar extends JMenuBar {
         _showTimerItem.addActionListener(e -> {
                 _showTimer = !_showTimer;
                 if (_showTimer) _showTimerItem.setText("Hide Timer"); else _showTimerItem.setText("Show Timer");
-                _habitat._controlPanel._timeButton.doClick();
+                _habitat.getControlPanel().getTimeButton().doClick();
         });
         _headMenu.add(_showTimerItem);
 
@@ -52,13 +52,13 @@ public class MenuBar extends JMenuBar {
         _showInfoItem.addActionListener(e -> {
                 _showInfo = !_showInfo;
                 if (_showInfo) _showInfoItem.setText("Hide Info"); else _showInfoItem.setText("Show Info");
-                _habitat._controlPanel._infoButton.doClick();
+                _habitat.getControlPanel().getInfoButton().doClick();
         });
         _headMenu.add(_showInfoItem);
 
         _showObjectsItem = new JMenuItem("Current objects");
         _showObjectsItem.addActionListener(e -> {
-            _habitat._controlPanel._objectsButton.doClick();
+            _habitat.getControlPanel().getObjectsButton().doClick();
         });
         _headMenu.add(_showObjectsItem);
 
@@ -69,7 +69,7 @@ public class MenuBar extends JMenuBar {
         _devAIItem.addActionListener(e -> {
                 _devAI = !_devAI;
                 if (_devAI) _devAIItem.setText("Stop developer's AI"); else _devAIItem.setText("Resume developer's AI");
-                _habitat._controlPanel._stopDevAIButton.doClick();
+                _habitat.getControlPanel().getStopDevAIButton().doClick();
         });
         _AIMenu.add(_devAIItem);
 
@@ -77,7 +77,7 @@ public class MenuBar extends JMenuBar {
         _manAIItem.addActionListener(e -> {
                 _manAI = !_manAI;
                 if (_manAI) _manAIItem.setText("Stop manager's AI"); else _manAIItem.setText("Resume manager's AI");
-                _habitat._controlPanel._stopManAIButton.doClick();
+                _habitat.getControlPanel().getStopManAIButton().doClick();
         });
         _AIMenu.add(_manAIItem);
 

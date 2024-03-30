@@ -2,7 +2,6 @@ package lib.control;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -69,7 +68,7 @@ public class Serializer implements Serializable {
 
     TreeSet<Integer> getEmployeeTree() { return createTree(); }
 
-    static void serialize(Serializer object) throws FileNotFoundException, IOException {
+    static void serialize(Serializer object) throws IOException {
         FileOutputStream out = new FileOutputStream($saveDirection);
         ObjectOutputStream oos = new ObjectOutputStream(out);
         oos.writeObject(object);
@@ -77,7 +76,7 @@ public class Serializer implements Serializable {
         out.close();
     }
 
-    static Serializer deserialize() throws FileNotFoundException, IOException, ClassNotFoundException {
+    static Serializer deserialize() throws IOException, ClassNotFoundException {
         FileInputStream in = new FileInputStream($loadDirection);
         ObjectInputStream ois = new ObjectInputStream(in);
         Serializer res = (Serializer)ois.readObject();
