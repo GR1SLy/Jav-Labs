@@ -274,7 +274,6 @@ public class Habitat extends JFrame {
             _employeeList.remove(emp1);
             _employeeBirthTime.get(_currentTime - Developer.getLifeTime()).emp1 = null;
             Developer.decCount();
-            Employee.decCount();
             if (_employeeBirthTime.get(_currentTime - Developer.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Developer.getLifeTime());
         }
         if (_employeeBirthTime.containsKey(_currentTime - Manager.getLifeTime()) && _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 != null) {
@@ -285,7 +284,6 @@ public class Habitat extends JFrame {
             }
             _employeeBirthTime.get(_currentTime - Manager.getLifeTime()).emp2 = null;
             for (int i = 0; i < emp.size(); i++ ) Manager.decCount();
-            Employee.decCount();
             if (_employeeBirthTime.get(_currentTime - Manager.getLifeTime()).isEmpty()) _employeeBirthTime.remove(_currentTime - Manager.getLifeTime());
         }
     }
