@@ -144,13 +144,14 @@ public class ConsoleDialog extends JFrame {
 
     private void getCommands() {
         System.out.print("\nCurrent commands:" + 
+                           "\nstatus\t- get simulation status" + 
                            "\nmanager:" + 
                                 "\n\trm - delete all managers" + 
                                 "\n\tadd - create N new managers" + 
                                 "\n\tcount - get count of managers" +
                            "\nai:" + 
                                 "\n\tvelocity - set movement speed for objects" + 
-                                "\n\ttime - set time of change movement for developers" + 
+                                "\n\ttime - set time of change movement for devs" + 
                            "\nsim:" + 
                                 "\n\tstart - start simulation" + 
                                 "\n\tstop - stop simulation" +
