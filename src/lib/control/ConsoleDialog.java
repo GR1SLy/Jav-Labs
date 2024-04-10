@@ -109,6 +109,7 @@ public class ConsoleDialog extends JFrame {
 
     private void checkCommand(String command) {
         switch (command) {
+            case "status" -> System.out.print("\n" + _habitat);
             case "manager rm" -> { System.out.print("\nManagers have been removed"); _habitat.fireManagers(); }
             case "manager add" -> { System.out.print("\nCount: "); _countNeeded = true; }
             case "manager count" -> { System.out.print("\nManager count: " + Manager.getCount()); }
