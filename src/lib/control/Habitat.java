@@ -103,9 +103,11 @@ public class Habitat extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                for (Employee employee : _employeeList) {
-                    employee.draw(g);
-                }
+                try {
+                    for (Employee employee : _employeeList) {
+                        employee.draw(g);
+                    }
+                } catch (Exception e) {}
             }
         };
         _workingPanel.add(_graphicsPanel, BorderLayout.CENTER);
