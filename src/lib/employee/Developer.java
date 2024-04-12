@@ -39,7 +39,7 @@ public class Developer extends Employee {
 
     public static void clear() { $count = 0; }
 
-    public static void decCount() { $count--; }
+    public static void decCount() { $count--; Employee.decCount(); }
 
     public Developer(final int maxX, final int maxY, final int time, Integer id) {
         super();
