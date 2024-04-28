@@ -1,0 +1,130 @@
+package lib.net;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class ClientFrame extends JFrame {
+
+    private JTextPane _conPane;
+    private Document _doc;
+    
+    private JComboBox<String> _idBox;
+    private JComboBox<String> _nameBox;
+    private ArrayList<Integer> _ids;
+    private JButton _sendButton;
+
+    private Client _client;
+
+    {
+        setTitle("Client");
+        setLayout(new GridLayout(4, 1));
+
+        _client = new Client(this);
+        
+        JLabel clientLabel = new JLabel("Current clients:", JLabel.CENTER);
+        JPanel clientPanel = new JPanel();
+        clientPanel.setLayout(new BorderLayout());
+        clientPanel.add(clientLabel, BorderLayout.PAGE_END);
+        add(clientPanel);
+
+        _conPane = new JTextPane();
+        _conPane.setEditable(false);
+        _conPane.setFocusable(false);
+        _conPane.setPreferredSize(new Dimension(150, 50));
+        _conPane.setMaximumSize(new Dimension(150, 50));
+        JScrollPane pane = new JScrollPane(_conPane);
+        JPanel panePanel = new JPanel();
+        panePanel.setLayout(new FlowLayout());
+        panePanel.add(pane);
+        add(panePanel);
+
+        _doc = _conPane.getDocument();
+        
+        JPanel sendPanel = new JPanel();
+        sendPanel.setLayout(new FlowLayout());
+
+        JLabel sendLabel = new JLabel("Send ");
+        sendPanel.add(sendLabel);
+
+        String[] names = { "Developers", "Managers" };
+        _nameBox = new JComboBox<>(names);
+        sendPanel.add(_nameBox);
+
+        JLabel toLabel = new JLabel(" to ");
+        sendPanel.add(toLabel);
+
+        _idBox = new JComboBox<>();
+        _idBox.addItem("-");
+        sendPanel.add(_idBox);
+        add(sendPanel);
+
+        _sendButton = new JButton("Send");
+        _sendButton.addActionListener(e -> {
+            if (_idBox.getSelectedIndex() != 0) {
+                int choise = _nameBox.getSelectedIndex();
+                int id = Integer.parseInt(_idBox.getSelectedItem().toString());
+                if (choise == 0) { //dev stealing
+
+                } else { //man stealing
+
+                }
+            }
+        });
+        JPanel butPanel = new JPanel();
+        butPanel.setLayout(new FlowLayout());
+        butPanel.add(_sendButton);
+        add(butPanel);
+
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            _client.close();
+        }));
+
+    }
+
+    public ClientFrame() throws IOException {
+        super();
+        setSize(450, 300);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public void setConnections(String cons, ArrayList<Integer> ids) {
+        try {
+            _doc.remove(0, _doc.getLength());
+            _doc.insertString(0, cons, null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        if (_ids != null) clearBoxes();
+        _ids = ids;
+        fillBoxes();
+        System.err.println(ids);
+    }
+
+    private void fillBoxes() {
+        for (int i = 0; i < _ids.size(); ++i) _idBox.addItem(_ids.get(i).toString());
+        _idBox.removeItem(_client.getID().toString());
+    }
+
+    private void clearBoxes() {
+        for (int i = 0; i < _ids.size(); ++i) _idBox.removeItem(_ids.get(i).toString());
+    }
+
+    public void showFrame() { setVisible(true); }
+}

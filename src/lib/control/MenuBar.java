@@ -1,19 +1,25 @@
 package lib.control;
 
+import java.io.IOException;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+
+import lib.net.ClientFrame;
 
 public class MenuBar extends JMenuBar {
     private JMenu _headMenu, _timerMenu, _AIMenu, _fileMenu;
     private JMenuItem _startItem, _stopItem, _showTimerItem, 
                       _showInfoItem, _showObjectsItem, _devAIItem, 
                       _manAIItem, _saveItem, _loadItem, _cfgItem,
-                      _consoleItem;
+                      _consoleItem, _clientItem;
     private JSeparator _separator1, _separator2;
     private boolean _showTimer, _showInfo, _devAI, _manAI;
     private Habitat _habitat;
+    private boolean _isConnected = false;
+    private ClientFrame _clientFrame;
 
     {
         _showTimer = _devAI = _manAI = true;
@@ -111,6 +117,22 @@ public class MenuBar extends JMenuBar {
                 _habitat.showConsole();
         });
         _fileMenu.add(_consoleItem);
+
+        _clientItem = new JMenuItem("Connect to server");
+        _clientItem.addActionListener(e -> {
+                if (!_isConnected) {
+                        try {
+                                _clientFrame = new ClientFrame();
+                        } catch (IOException e1) {
+                                e1.printStackTrace();
+                        }
+                        _isConnected = true;
+                        _clientItem.setText("Show server");
+                } else {
+                        _clientFrame.showFrame();
+                }
+        });
+        _fileMenu.add(_clientItem);
 
         add(_fileMenu);
 
