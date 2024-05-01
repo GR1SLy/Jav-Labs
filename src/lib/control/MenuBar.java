@@ -121,8 +121,10 @@ public class MenuBar extends JMenuBar {
         _clientItem = new JMenuItem("Connect to server");
         _clientItem.addActionListener(e -> {
                 if (!_isConnected) {
+                        System.err.println("Trying to connect to server");
                         try {
-                                _clientFrame = new ClientFrame();
+                                _clientFrame = new ClientFrame(_habitat);
+                                System.err.println("Client connected");
                         } catch (IOException e1) {
                                 e1.printStackTrace();
                         }

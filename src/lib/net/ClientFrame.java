@@ -10,12 +10,16 @@ import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+import lib.control.Habitat;
+import lib.employee.Employee;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class ClientFrame extends JFrame {
 
@@ -28,6 +32,8 @@ public class ClientFrame extends JFrame {
     private JButton _sendButton;
 
     private Client _client;
+
+    private Habitat _habitat;
 
     {
         setTitle("Client");
@@ -77,6 +83,7 @@ public class ClientFrame extends JFrame {
             if (_idBox.getSelectedIndex() != 0) {
                 int choise = _nameBox.getSelectedIndex();
                 int id = Integer.parseInt(_idBox.getSelectedItem().toString());
+                _client.idToSend(id, choise);
                 if (choise == 0) { //dev stealing
 
                 } else { //man stealing
@@ -96,12 +103,15 @@ public class ClientFrame extends JFrame {
 
     }
 
-    public ClientFrame() throws IOException {
+    public ClientFrame(Habitat hbt) throws IOException {
         super();
+        System.err.println("Trying to create Client Frame");
+        _habitat = hbt;
         setSize(450, 300);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+        System.err.println("Client Frame created");
     }
 
     public void setConnections(String cons, ArrayList<Integer> ids) {
@@ -127,4 +137,8 @@ public class ClientFrame extends JFrame {
     }
 
     public void showFrame() { setVisible(true); }
+
+    LinkedList<Employee> getEmployees(int what) { return _habitat.getEmployees(what); }
+
+    void setEmployees(LinkedList<Employee> employees) { _habitat.setEmployees(employees); }
 }
