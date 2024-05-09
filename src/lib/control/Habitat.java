@@ -62,40 +62,6 @@ public class Habitat extends JFrame {
 
     ControlPanel getControlPanel() { return _controlPanel; }
 
-    // public LinkedList<Employee> getEmployees() { return _employeeList; }
-    public LinkedList<Employee> getEmployees(int what) {
-        LinkedList<Employee> employees = new LinkedList<>();
-        if (what == 0) for (Employee employee : _employeeList) {
-            if (employee instanceof Developer) employees.addLast(employee);
-        } else for (Employee employee : _employeeList) {
-            if (employee instanceof Manager) employees.addLast(employee);
-        }
-        removeEmployees(employees);
-        return employees;
-    }
-
-    public void setEmployees(LinkedList<Employee> employees) {
-        for (Employee employee : employees) {
-            _employeeList.addLast(employee);
-            _employeeID.add(employee.getID());
-            if (_employeeBirthTime.containsKey(employee.getBirthTime())) {
-                Pair pair = _employeeBirthTime.get(employee.getBirthTime());
-                if (employee instanceof Developer) pair.emp1 = employee;
-                else if (pair.emp2 != null) pair.emp2.addLast(employee);
-                else { LinkedList<Employee> newEmployees = new LinkedList<>(); newEmployees.add(employee); pair.emp2 = newEmployees; }
-            }
-        }
-    }
-
-    private void removeEmployees(LinkedList<Employee> employees) {
-        for (Employee employee : employees) {
-            _employeeList.remove(employee);
-            _employeeID.remove(employee.getID());
-            if (employee instanceof Developer) { Developer.decCount(); _employeeBirthTime.get(employee.getBirthTime()).emp1 = null; }
-            else { Manager.decCount(); _employeeBirthTime.get(employee.getBirthTime()).emp2 = null; }
-        }
-    }
-
     {
         ConfigOperator co = new ConfigOperator();
         ConfigOperator.chooseLoadFile();
@@ -265,7 +231,7 @@ public class Habitat extends JFrame {
         _graphicsPanel.repaint();
     }
 
-    private int findID(Random rand) {
+    public int findID(Random rand) {
         Integer id = rand.nextInt(1000, 9999);
         while (_employeeID.contains(id)) id = rand.nextInt(1000, 9999);
         _employeeID.add(id);
@@ -422,6 +388,42 @@ public class Habitat extends JFrame {
             if (stopped) startSimulation();
         } catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }
+
+    public LinkedList<Employee> getEmployees(int what) {
+        LinkedList<Employee> employees = new LinkedList<>();
+        if (what == 0) for (Employee employee : _employeeList) {
+            if (employee instanceof Developer) employees.addLast(employee);
+        } else for (Employee employee : _employeeList) {
+            if (employee instanceof Manager) employees.addLast(employee);
+        }
+        removeEmployees(employees);
+        return employees;
+    }
+
+    public void setEmployees(LinkedList<Employee> employees) {
+        for (Employee employee : employees) {
+            if (_currentTime - Developer.getLifeTime() >= employee.getBirthTime()) continue;
+            _employeeList.addLast(employee);
+            _employeeID.add(employee.getID());
+            if (_employeeBirthTime.containsKey(employee.getBirthTime())) {
+                Pair pair = _employeeBirthTime.get(employee.getBirthTime());
+                if (employee instanceof Developer) pair.emp1 = employee;
+                else if (pair.emp2 != null) pair.emp2.addLast(employee);
+                else { LinkedList<Employee> newEmployees = new LinkedList<>(); newEmployees.add(employee); pair.emp2 = newEmployees; }
+            }
+        }
+    }
+
+    private void removeEmployees(LinkedList<Employee> employees) {
+        for (Employee employee : employees) {
+            _employeeList.remove(employee);
+            _employeeID.remove(employee.getID());
+            if (employee instanceof Developer) { if (_employeeBirthTime.containsKey(employee.getBirthTime())) { Developer.decCount(); _employeeBirthTime.get(employee.getBirthTime()).emp1 = null; }}
+            else { if (_employeeBirthTime.containsKey(employee.getBirthTime())) {_employeeBirthTime.get(employee.getBirthTime()).emp2 = null; Manager.decCount(); }}
+        }
+    }
+
+    public Rectangle getGraphBounds() { return _graphicsPanel.getBounds(); }
 
     @Override
     public String toString() {

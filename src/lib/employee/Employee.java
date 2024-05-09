@@ -31,6 +31,10 @@ public abstract class Employee implements IBehaviour, Serializable {
     public int getID() { return _id; }
 
     public int getBirthTime() { return _birthTime; }
+
+    public int getX() { return _x; }
+
+    public int getY() { return _y; }
     
     public abstract String toString();
 

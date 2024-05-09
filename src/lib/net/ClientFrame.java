@@ -17,9 +17,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class ClientFrame extends JFrame {
 
@@ -39,14 +41,13 @@ public class ClientFrame extends JFrame {
         setTitle("Client");
         setLayout(new GridLayout(4, 1));
 
-        _client = new Client(this);
         
         JLabel clientLabel = new JLabel("Current clients:", JLabel.CENTER);
         JPanel clientPanel = new JPanel();
         clientPanel.setLayout(new BorderLayout());
         clientPanel.add(clientLabel, BorderLayout.PAGE_END);
         add(clientPanel);
-
+        
         _conPane = new JTextPane();
         _conPane.setEditable(false);
         _conPane.setFocusable(false);
@@ -57,26 +58,28 @@ public class ClientFrame extends JFrame {
         panePanel.setLayout(new FlowLayout());
         panePanel.add(pane);
         add(panePanel);
-
+        
         _doc = _conPane.getDocument();
         
         JPanel sendPanel = new JPanel();
         sendPanel.setLayout(new FlowLayout());
-
+        
         JLabel sendLabel = new JLabel("Send ");
         sendPanel.add(sendLabel);
-
+        
         String[] names = { "Developers", "Managers" };
         _nameBox = new JComboBox<>(names);
         sendPanel.add(_nameBox);
-
+        
         JLabel toLabel = new JLabel(" to ");
         sendPanel.add(toLabel);
-
+        
         _idBox = new JComboBox<>();
         _idBox.addItem("-");
         sendPanel.add(_idBox);
         add(sendPanel);
+
+        _client = new Client(this);
 
         _sendButton = new JButton("Send");
         _sendButton.addActionListener(e -> {
@@ -84,11 +87,6 @@ public class ClientFrame extends JFrame {
                 int choise = _nameBox.getSelectedIndex();
                 int id = Integer.parseInt(_idBox.getSelectedItem().toString());
                 _client.idToSend(id, choise);
-                if (choise == 0) { //dev stealing
-
-                } else { //man stealing
-
-                }
             }
         });
         JPanel butPanel = new JPanel();
@@ -105,7 +103,6 @@ public class ClientFrame extends JFrame {
 
     public ClientFrame(Habitat hbt) throws IOException {
         super();
-        System.err.println("Trying to create Client Frame");
         _habitat = hbt;
         setSize(450, 300);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -124,7 +121,6 @@ public class ClientFrame extends JFrame {
         if (_ids != null) clearBoxes();
         _ids = ids;
         fillBoxes();
-        System.err.println(ids);
     }
 
     private void fillBoxes() {
@@ -136,9 +132,15 @@ public class ClientFrame extends JFrame {
         for (int i = 0; i < _ids.size(); ++i) _idBox.removeItem(_ids.get(i).toString());
     }
 
+    int findID() {
+        return _habitat.findID(new Random());
+    }
+
     public void showFrame() { setVisible(true); }
 
     LinkedList<Employee> getEmployees(int what) { return _habitat.getEmployees(what); }
 
     void setEmployees(LinkedList<Employee> employees) { _habitat.setEmployees(employees); }
+
+    Rectangle getGraphBounds() { return _habitat.getGraphBounds(); }
 }

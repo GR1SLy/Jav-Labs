@@ -53,6 +53,12 @@ public class Developer extends Employee {
         $count++;
     }
 
+    public Developer(final int maxX, final int maxY, final int time, Integer id, int x, int y) {
+        this(maxX, maxY, time, id);
+        _x = x;
+        _y = y;
+    }
+
     @Override
     public void move(boolean isRunning) {
         if (!isRunning) return;
