@@ -455,11 +455,9 @@ public class Habitat extends JFrame {
     }
 
     private void createCollections(LinkedList<Employee> employees) {
-        HashMap<Integer, Pair> map = Serializer.createMap(employees);
-        TreeSet<Integer> tree = Serializer.createTree(employees);
         _employeeList = employees;
-        _employeeBirthTime = map;
-        _employeeID = tree;
+        _employeeBirthTime = Serializer.createMap(employees);
+        _employeeID = Serializer.createTree(employees);
     }
 
     @Override

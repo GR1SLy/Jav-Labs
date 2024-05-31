@@ -42,25 +42,17 @@ public class DBController {
         statement.execute("DELETE FROM devs");
         statement.execute("DELETE FROM mans");
         for (Employee employee : employees) {
-            if (employee instanceof Developer) saveDev(employee, devStatement);
-            else saveMan(employee, manStatement);
+            if (employee instanceof Developer) saveEmp(employee, devStatement);
+            else saveEmp(employee, manStatement);
         }
         System.err.println("Data saved successfully");
     }
 
-    private void saveDev(Employee dev, PreparedStatement statement) throws SQLException {
-        statement.setInt(1, dev.getID());
-        statement.setInt(2, dev.getX());
-        statement.setInt(3, dev.getY());
-        statement.setInt(4, dev.getBirthTime());
-        statement.executeUpdate();
-    }
-
-    private void saveMan(Employee man, PreparedStatement statement) throws SQLException {
-        statement.setInt(1, man.getID());
-        statement.setInt(2, man.getX());
-        statement.setInt(3, man.getY());
-        statement.setInt(4, man.getBirthTime());
+    private void saveEmp(Employee emp, PreparedStatement statement) throws SQLException {
+        statement.setInt(1, emp.getID());
+        statement.setInt(2, emp.getX());
+        statement.setInt(3, emp.getY());
+        statement.setInt(4, emp.getBirthTime());
         statement.executeUpdate();
     }
 
